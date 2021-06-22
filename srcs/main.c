@@ -1,8 +1,13 @@
 #include "rush.h"
 
-void test_button(SDLX_GUIElem *elem)
+void select_enter(SDLX_GUIElem *elem)
 {
-	elem->animator->state = 1;
+	SDLX_Animator_StateSet(elem->animator, 1, SDLX_FALSE);
+}
+
+void SelectExit_button(SDLX_GUIElem *elem)
+{
+	SDLX_Animator_StateSet(elem->animator, 0, SDLX_AWAITANIM);
 }
 
 Context *init(void)
@@ -26,9 +31,6 @@ Context *init(void)
 	anim[0] = SDLX_AnimLoad(tex, 1, 64, 64, SDL_TRUE, 0, 0);
 	anim[1] = SDLX_AnimLoad(tex, 7, 64, 64, SDL_FALSE, 64, 0);
 	anim[2] = SDLX_AnimLoad(tex, 2, 64, 64, SDL_FALSE, 64 * 8, 0);
-	anim[0]->queue = 0;
-	anim[1]->queue = 0;
-	anim[2]->queue = 0;
 	animator = SDLX_AnimatorCreate(NULL, anim, 3, &dst);
 	animator->state = 0;
 	ctx->buttons[0] = SDLX_GUIElem_Create(animator, "Start", &test_button, NULL, NULL, NULL, NULL, NULL);

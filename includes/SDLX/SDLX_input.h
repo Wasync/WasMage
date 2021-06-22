@@ -18,6 +18,7 @@ typedef struct	SDLX_Input
 	int input[INPUT_AMOUNT]; // This is just assuming no more than 5 keys will be mapped but that is a terrible asusmption. This should be allocated
 	int mouse_x;
 	int mouse_y;
+	int mouse_click,
 }				SDLX_Input;
 
 

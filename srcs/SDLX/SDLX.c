@@ -49,6 +49,12 @@ typedef struct SDLX_GUIMeta
 	struct coords { int x, y; };
 }				SDLX_GUIMeta;
 
+typedef struct SDLX_AnimatorMeta
+{
+	int			stateLock;
+	int			nextAnim;
+}				SDLX_AnimatorMeta;
+
 
 static _SDLX_Intern _intern;
 
@@ -199,6 +205,23 @@ void			SDLX_GUIElem_SetActive(SDLX_GUIElem *elem, int isActive)
 	meta->active = isActive;
 }
 
+void SDLX_Animator_StateSet(SDLX_Animator *anim,int newState, int awaitCurrent)
+{
+	SDLX_AnimatorMeta *meta;
+
+	meta = anim->metadata;
+	if (awaitCurrent == SDLX_AWAITANIM || awaitCurrent > anim->anims[anim->state]->cycle)
+	{
+		meta->stateLock = awaitCurrent;
+		meta->nextAnim = newState;
+	}
+	else
+	{
+		anim->state = newState;
+		anim->frameNo = 0;
+	}
+}
+
 void SDLX_GUIUpdate(void)
 {
 	int i;
@@ -216,6 +239,7 @@ void SDLX_GUIUpdate(void)
 		{
 			if (SDLX_MouseIntersectRect(input.mouse_x, input.mouse_y, _intern.GUI[i].animator->dst))
 			{
+				
 				if (meta->isSelect == SDLX_TRUE)
 				{
 					meta->OnSelectStay(&(_intern.GUI[i]));
@@ -224,6 +248,14 @@ void SDLX_GUIUpdate(void)
 				{
 					meta->isSelect = SDLX_TRUE;
 					meta->OnSelectEnter(&(_intern.GUI[i]));
+				}
+			}
+			else
+			{
+				if (meta->isSelect == SDLX_TRUE)
+				{
+					meta->isSelect = SDL_FALSE;
+					meta->OnSelectExit(&(_intern.GUI[i]));
 				}
 			}
 		}

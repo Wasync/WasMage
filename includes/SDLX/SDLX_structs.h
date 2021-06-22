@@ -6,6 +6,7 @@
 
 enum
 {
+	SDLX_AWAITANIM = -2,
 	SDLX_NONE = -1,
 	SDLX_FALSE = 0,
 	SDLX_TRUE,
@@ -55,11 +56,12 @@ typedef struct SDLX_Animator
 	int			state;
 	int			amount;
 	int			frameNo;
-	int			stateLock;
 
 	SDL_Rect	dst;
 	SDL_Rect	*dstptr;
 	SDLX_Anim	**anims;
+
+	void		*metadata;
 }				SDLX_Animator;
 
 typedef struct SDLX_RenderQueue

@@ -53,6 +53,8 @@ void			SDLX_BackgroundSet(SDL_Texture *bg);
 SDLX_Display	*SDLX_DisplayGet(void);
 
 void			SDLX_AnimationUpdate(void);
+void SDLX_Animator_StateSet(SDLX_Animator *anim,int newState, int awaitCurrent);
+
 void			SDLX_RenderQueueAdd(int queue, SDLX_Sprite sprite);
 
 /**
