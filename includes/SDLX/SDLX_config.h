@@ -24,9 +24,9 @@
 # define ASSETS_PATH NULL
 
 /* Used in FPSAdjust to controle framerate and deliver consistent FPS */
-# define FRAMERATE (60)
+# define FRAMERATE (30)
 # define FRAME_TIME 1000 / FRAMERATE
 
-# define INPUT_AMOUNT 5
+# define INPUT_AMOUNT 10
 
 # endif

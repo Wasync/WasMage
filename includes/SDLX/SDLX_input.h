@@ -1,7 +1,8 @@
-#include "SDLX.h"
-
 #ifndef SDLX_INPUT_H
 # define SDLX_INPUT_H
+
+# include "SDLX/SDLX_config.h"
+# include "SDLX.h"
 
 typedef struct	SDLX_KeyMap
 {
@@ -18,7 +19,7 @@ typedef struct	SDLX_Input
 	int input[INPUT_AMOUNT]; // This is just assuming no more than 5 keys will be mapped but that is a terrible asusmption. This should be allocated
 	int mouse_x;
 	int mouse_y;
-	int mouse_click,
+	int mouse_click;
 }				SDLX_Input;
 
 
@@ -56,5 +57,6 @@ int			SDLX_InputRemap(int sdl_code, int type, int sdlx_code, int controller_no);
  *  */
 void		SDLX_InputMap  (int sdl_code, int type, int sdlx_code, int SDL_UNUSED controller_no);
 void		SDLX_InputUpdate(SDL_Event SDL_UNUSED event);
+void		SDLX_InputLoop(void);
 
 #endif

@@ -73,21 +73,28 @@ int SDLX_InputRemap(int sdl_code, int type, int sdlx_code, int controller_no)
 void SDLX_InputUpdate(SDL_Event SDL_UNUSED event)
 {
 	SDLX_KeyMap 	*map_node;
+	SDL_Event		e[1];
 	int				controller_button;
-	int 			i;
+	int 			eNum;
 	const Uint8		*keyboard;
 
 	keyboard = SDL_GetKeyboardState(NULL);
 	map_node = keymap;
-	i = 0;
+
 	SDL_GetMouseState(&input.mouse_x, &input.mouse_y);
 	//SDL_Log("Updating input \n");
-	while (i < 5)
-	{
-		input.input[i] = 0;
-		i++;
-	}
-
+	SDL_PumpEvents();
+	eNum = SDL_PeepEvents(e, 1, SDL_PEEKEVENT, SDL_MOUSEBUTTONDOWN - 1, SDL_MOUSEBUTTONUP + 1);
+	SDL_memset4(input.input, 0, INPUT_AMOUNT);
+	// while (i < 5)
+	// {
+	// 	input.input[i] = 0;
+	// 	i++;
+	// }
+	if (e[0].button.type == SDL_MOUSEBUTTONUP || e[0].button.type == SDL_MOUSEBUTTONDOWN)
+		input.mouse_click = e[0].button.type;
+	else
+		input.mouse_click = SDLX_NONE;
 	map_node = keymap;
 	while (map_node)
 	{

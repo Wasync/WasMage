@@ -3,6 +3,24 @@
 
 # include "../SDL2/SDL.h"
 
+# ifndef MAX
+#  define MAX(a, b)\
+	({ 	__typeof__ (a) _a = (a);\
+		__typeof__ (b) _b = (b);\
+		(_a > _b) ? (a) : (b);})\
+
+# endif
+
+# ifndef MIN
+#  define MIN(a, b)			\
+({ 	__typeof__ (a) _a = (a);\
+	__typeof__ (b) _b = (b);\
+	(_a < _b) ? (a) : (b);})\
+
+# endif
+
+struct SDLX_GUIMeta;
+// typedef struct SDLX_GUIMeta  GUIMETA;
 
 enum
 {
@@ -83,8 +101,8 @@ typedef struct SDLX_GUIElem
 {
 	SDLX_Animator *animator;
 
-	void *metadata;
 	void *data;
+	struct SDLX_GUIMeta *metadata;
 
 	const char *name;
 }				SDLX_GUIElem;

@@ -16,9 +16,9 @@ BIN_DIR = bin/
 
 SDLX_NAMES = 			\
 	SDLX_anim			\
-	SDLX_init			\
 	SDLX_input			\
 	SDLX_render			\
+	SDLX_UI				\
 	SDLX_utils			\
 	SDLX				\
 

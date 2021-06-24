@@ -1,4 +1,5 @@
-#include "SDLX.h"
+#include "SDLX/SDLX_structs.h"
+#include "SDLX/SDLX_config.h"
 
 void SDLX_FPSAdjust()
 {
@@ -19,6 +20,7 @@ void SDLX_FPSAdjust()
 	}
 	start = SDL_GetTicks();
 }
+
 
 
 int	SDLX_MouseIntersectRect(int x, int y, SDL_Rect rect)
