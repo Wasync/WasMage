@@ -98,7 +98,7 @@ void	SDLX_RenderQueueDisplay(SDLX_RenderQueue *queue, SDLX_Display *display)
 	{
 		SDL_RenderCopyEx(display->renderer,
 						queue->sprites[i].spriteSheet,
-						queue->sprites[i].srcptr,
+						&queue->sprites[i].src,
 						queue->sprites[i].dstptr,
 						queue->sprites[i].angle,
 						&queue->sprites[i].center,
@@ -189,13 +189,14 @@ void SDLX_RenderDrawCircle(SDL_Renderer *ren, SDLX_Circle circle)
         valx += 2;
         val += valx + 1;
 		SDL_RenderDrawPoint(ren, circle.x + x, circle.y + y);
-		SDL_RenderDrawPoint(ren, circle.x - x, circle.y + y);
+		SDL_RenderDrawPoint(ren, circle.x + y, circle.y + x);
 		SDL_RenderDrawPoint(ren, circle.x + x, circle.y - y);
+		SDL_RenderDrawPoint(ren, circle.x + y, circle.y - x);
+		
+		SDL_RenderDrawPoint(ren, circle.x - x, circle.y + y);
 		SDL_RenderDrawPoint(ren, circle.x - x, circle.y - y);
 		SDL_RenderDrawPoint(ren, circle.x - y, circle.y - x);
-		SDL_RenderDrawPoint(ren, circle.x + y, circle.y - x);
 		SDL_RenderDrawPoint(ren, circle.x - y, circle.y + x);
-		SDL_RenderDrawPoint(ren, circle.x + y, circle.y + x);
 		i += 8;
 	}
 	// printf("Points %d circumfrence %d",i,(int)( 2 * M_PI * circle.radius ));

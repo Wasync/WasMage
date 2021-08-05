@@ -20,6 +20,7 @@
 # endif
 
 struct SDLX_GUIMeta;
+struct SDLX_Animator;
 // typedef struct SDLX_GUIMeta  GUIMETA;
 
 enum
@@ -49,35 +50,38 @@ typedef struct SDLX_Sprite
 	SDL_Rect			dst;
 	SDL_Rect			src;
 	SDL_Rect			*dstptr;
-	SDL_Rect			*srcptr;
 
 	SDL_RendererFlip	flip;
 	SDL_Point			center;
 	SDL_Texture			*spriteSheet;
 
+	struct SDLX_Animator *animator;
+
 	double				angle;
-	int					active;
+	int					queue;
 }	SDLX_Sprite;
 
 typedef struct SDLX_Anim
 {
 	int			cycle;
 	int			start;
-	int			queue;
 
 	SDL_bool	loop;
-	SDLX_Sprite	*sprites;
+	SDL_Rect	*srcs;
+	SDL_Texture *spriteSheet;
 }				SDLX_Anim;
 
 typedef struct SDLX_Animator
 {
 	int			state;
+	int			active;
 	int			amount;
 	int			frameNo;
 
-	SDL_Rect	dst;
-	SDL_Rect	*dstptr;
 	SDLX_Anim	**anims;
+
+	SDLX_Sprite	sprite;
+	SDLX_Sprite	*spriteptr;
 
 	void		*metadata;
 }				SDLX_Animator;
@@ -99,14 +103,19 @@ typedef struct SDLX_Circle
 
 typedef struct SDLX_GUIElem
 {
-	SDLX_Animator *animator;
+	SDLX_Sprite sprite;
 
 	void *data;
+	
+	int	 triggered;
+	int  autotrigger;
 	struct SDLX_GUIMeta *metadata;
 
 	const char *name;
 }				SDLX_GUIElem;
 
+
+typedef void (* SDLX_LevelFunc)(void *);
 typedef void (* SDLX_UIFunc)(SDLX_GUIElem *);
 
 #endif

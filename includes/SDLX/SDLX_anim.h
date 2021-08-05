@@ -14,7 +14,7 @@ void			SDLX_Animator_StateSet(SDLX_Animator *anim,int newState, int awaitCurrent
  * @param amount the number of animation to add.  This shiuld be the length of anims
  * @param dst	the destination rectangle to render the anim
  */
-SDLX_Animator	*SDLX_AnimatorCreate(SDLX_Animator *copy, SDLX_Anim **anims, int amount, SDL_Rect *dst);
+SDLX_Animator *SDLX_AnimatorCreate(SDLX_Animator *copy, SDLX_Anim **anims, int amount, SDL_Rect *dst, SDLX_Sprite *sprite);
 
 /**
  * @brief Loads an animation from a spritesheet.
@@ -26,6 +26,8 @@ SDLX_Animator	*SDLX_AnimatorCreate(SDLX_Animator *copy, SDLX_Anim **anims, int a
  * @param x_off offset in pixel of the leftmost frame from the border of te image
  * @param y_off offset in pixel of the topmost frame from the border of te image
  */
-SDLX_Anim		*SDLX_AnimLoad(SDL_Texture *tex, int cycle, int cell_w, int cell_h, SDL_bool loop, int x_off, int y_off);
+SDLX_Anim		*SDLX_AnimLoadHorizontal(SDL_Texture *tex, int cycle, int cell_w, int cell_h, SDL_bool loop, int x_off, int y_off);
+SDLX_Anim		*SDLX_AnimLoadVertical(SDL_Texture *tex, int cycle, int cell_w, int cell_h, SDL_bool loop, int x_off, int y_off);
+
 
 #endif
