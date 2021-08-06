@@ -15,8 +15,10 @@
 
 /* Window settings */
 # define WIN_TITLE "DEFAULT"
-# define WIN_W (500)
-# define WIN_H (500)
+# define H_SCALE (1.75)
+# define W_SCALE (1.25)
+# define WIN_W (500 * W_SCALE)
+# define WIN_H (500 * H_SCALE)
 # define WIN_X (SDL_WINDOWPOS_CENTERED)
 # define WIN_Y (SDL_WINDOWPOS_CENTERED)
 
@@ -28,5 +30,7 @@
 # define FRAME_TIME 1000 / FRAMERATE
 
 # define INPUT_AMOUNT 10
+
+# define MAX_LEVELS 10
 
 # endif

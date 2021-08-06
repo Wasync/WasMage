@@ -1,0 +1,29 @@
+
+-------------- CORE_GAMEPLAY --------------
+- Fix the angle in the drawing matrix
+- Find the correct spell based on ID
+- Set the spell as active
+- Cast from hand to target in correct amount of time
+- Mana substracted & regeneration
+- Enemy walk towards crysal
+- Enemy collision
+- Enemy attack
+- Spellbook menu
+
+-------------- Main Menu ----------------
+- Spellbook
+- Shop ?
+- Continue
+- Scores
+
+-------------- ADDITIONAL ---------------
+
+- Enemy avoid each other
+- Enemy Waves
+- Spell upgrades
+- Coin gain from levels
+- Spell unlock
+
+------------- SDLX -----------------------
+
+- Review and change relationship between srpites, animators and UI.

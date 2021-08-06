@@ -22,6 +22,7 @@
 # include "../SDL2/SDL_ttf.h"
 
 # include "SDLX_config.h"
+# include "SDLX_LevelManager.h"
 # include "SDLX_anim.h"
 # include "SDLX_input.h"
 # include "SDLX_render.h"

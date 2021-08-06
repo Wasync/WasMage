@@ -1,14 +1,15 @@
 NAME = Rush
 
 DEBUG_FLAGS = -fsanitize=address
-FLAGS =
-INCLUDES = -I includes/ -I includes/SDL2/ -I includes/SDLX/
+FLAGS = -g $(DEBUG_FLAGS)
+INCLUDES = -I includes/ -I includes/SDL2/ -I includes/SDLX/ -I includes/MT
 
 LIB_DIR = libs/
 LIBRARIES = $(LIB_DIR)libSDL2-2.0.0.dylib $(LIB_DIR)libSDL2_image-2.0.0.dylib $(LIB_DIR)libSDL2_ttf-2.0.0.dylib
 STATIC_LIB = -L -l $(LIB_DIR)libSDLX.a
 
 SDLX_DIR = SDLX/
+MT_DIR = MT/
 SRCS_DIR = srcs/
 
 BIN_DIR = bin/
@@ -17,14 +18,25 @@ BIN_DIR = bin/
 SDLX_NAMES = 			\
 	SDLX_anim			\
 	SDLX_input			\
+	SDLX_LevelManager	\
 	SDLX_render			\
 	SDLX_UI				\
 	SDLX_utils			\
 	SDLX				\
 
+MT_NAMES = 				\
+	MT_v2				\
+	MT					\
+
 SRCS_NAMES =								\
 	$(addprefix $(SDLX_DIR), $(SDLX_NAMES))	\
+	$(addprefix $(MT_DIR), $(MT_NAMES))	\
 	main 				\
+	utils\
+	debug				\
+	levels\
+	buttons\
+	init\
 
 C_FILES =				\
 	$(SRCS_NAMES) 		\

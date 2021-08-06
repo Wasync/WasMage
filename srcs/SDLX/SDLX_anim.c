@@ -13,13 +13,14 @@ typedef struct SDLX_AnimatorInfo
 {
 	SDLX_Animator	elem;
 	SDLX_AnimatorMeta meta;
+	struct SDLX_AnimatorInfo *next;
 }				SDLX_AnimatorInfo;
 
 typedef struct Anim_intern
 {
-	SDLX_AnimatorInfo *animators;
+	SDLX_AnimatorInfo *head;
+	SDLX_AnimatorInfo *tail;
 
-	size_t animatorMax;
 	size_t animatorCount;
 }			Anim_intern;
 
@@ -28,52 +29,73 @@ static Anim_intern _intern;
 void SDLX_AnimInit(void)
 {
 	_intern.animatorCount = 0;
-	_intern.animatorMax = ANIMS_CT;
-	_intern.animators = calloc(ANIMS_CT, sizeof(SDLX_AnimatorInfo));
+	_intern.head = calloc(1, sizeof(SDLX_AnimatorInfo));
+	_intern.tail = _intern.head;
 }
 
-SDLX_Animator *SDLX_AnimatorCreate(SDLX_Animator *copy, SDLX_Anim **anims, int amount, SDL_Rect *dst)
+SDLX_Animator *SDLX_AnimatorCreate(SDLX_Animator *copy, SDLX_Anim **anims, int amount, SDL_Rect *dst, SDLX_Sprite *sprite)
 {
-	size_t i;
+	SDLX_AnimatorInfo *node;
 
-	i = _intern.animatorCount;
-
-	if (i >= _intern.animatorMax)
-	{
-		_intern.animatorMax *= 2;
-		SDL_realloc(_intern.animators, _intern.animatorMax);
-	}
+	node =  calloc(1, sizeof(SDLX_AnimatorInfo));
 	if (copy)
 	{
-		_intern.animators[i].elem.amount = copy->amount;
-		_intern.animators[i].elem.anims = copy->anims;
-		_intern.animators[i].elem.dst = copy->dst;
-		_intern.animators[i].elem.dstptr = &_intern.animators[i].elem.dst;
+		node->elem.anims = copy->anims;
+		node->elem.amount = copy->amount;
+		node->elem.sprite = copy->sprite;
+		node->elem.spriteptr = &node->elem.sprite;
+		node->elem.sprite.dstptr = &node->elem.sprite.dst;
 	}
 	else
 	{
-		_intern.animators[i].elem.amount = amount;
-		_intern.animators[i].elem.anims = anims;
+		node->elem.anims = anims;
+		node->elem.amount = amount;
 	}
+	if (sprite)
+	{
+		node->elem.spriteptr = sprite;
+		node->elem.sprite = *sprite;
+	}
+	else
+		node->elem.spriteptr = &node->elem.sprite;
 	if (dst)
 	{
-		_intern.animators[i].elem.dst = *dst;
-		_intern.animators[i].elem.dstptr = &_intern.animators[i].elem.dst;
+		node->elem.sprite.dst = *dst;
+		if (sprite)
+		{
+			node->elem.spriteptr->dst = *dst;
+			if (!node->elem.spriteptr->dstptr)
+				node->elem.spriteptr->dstptr = &node->elem.spriteptr->dst;
+		}
+		// node->elem.sprite.dstptr = dst;
 	}
-	else
-		_intern.animators[i].elem.dstptr = NULL;
-	_intern.animators[i].elem.frameNo = 0;
-	_intern.animators[i].elem.state = 0;
+	// else
+		node->elem.sprite.dstptr = &node->elem.sprite.dst;
 
-	_intern.animators[i].meta.stateLock = -1;
-	_intern.animators[i].meta.nextAnim = -1;
-	_intern.animators[i].elem.metadata = &_intern.animators[i].meta;
-	_intern.animatorCount++;
-	return &_intern.animators[i].elem;
+	node->elem.sprite.animator = &node->elem;
+	node->elem.spriteptr->animator = &node->elem;
+	node->elem.frameNo = 0;
+	node->elem.state = 0;
+
+	node->meta.stateLock = -1;
+	node->meta.nextAnim = -1;
+	node->elem.metadata = &node->meta;
+
+	_intern.tail->next = node;
+	_intern.tail = node;
+	node->elem.active = SDLX_TRUE;
+	SDL_Log("Sprite %p(%d, %d) , w %d, h %d\n",
+	node->elem.spriteptr,
+	node->elem.spriteptr->dstptr->x,
+	node->elem.spriteptr->dstptr->y,
+	node->elem.spriteptr->dstptr->w,
+	node->elem.spriteptr->dstptr->h
+	);
+
+	return &node->elem;
 }
 
-//potentially pass destination ptr instead of returning alloc
-SDLX_Anim	*SDLX_AnimLoad(SDL_Texture *tex, int cycle, int cell_w, int cell_h, SDL_bool loop, int x_off, int y_off)
+SDLX_Anim	*SDLX_AnimLoadVertical(SDL_Texture *tex, int cycle, int cell_w, int cell_h, SDL_bool loop, int x_off, int y_off)
 {
 	SDLX_Anim	*anim;
 	SDLX_Display *display;
@@ -86,25 +108,52 @@ SDLX_Anim	*SDLX_AnimLoad(SDL_Texture *tex, int cycle, int cell_w, int cell_h, SD
 	anim->cycle = cycle;
 	anim->start = 0;
 	anim->loop = loop;
-	anim->queue = 0;
-	anim->sprites = calloc(cycle, sizeof(SDLX_Sprite));
+	anim->srcs = calloc(cycle, sizeof(SDL_Rect));
 
 	i = 0;
 	x = x_off;
 	y = y_off;
+	anim->spriteSheet = tex;
 	while (i < cycle)
 	{
-		anim->sprites[i].src.x = x;
-		anim->sprites[i].src.y = y;
-		anim->sprites[i].src.h = cell_h;
-		anim->sprites[i].src.w = cell_w;
-		anim->sprites[i].srcptr = &anim->sprites[i].src;
+		anim->srcs[i].x = x;
+		anim->srcs[i].y = y;
+		anim->srcs[i].h = cell_h;
+		anim->srcs[i].w = cell_w;
 
-		anim->sprites[i].center.x = 0;
-		anim->sprites[i].center.y = 0;
-		anim->sprites[i].spriteSheet = tex;
+		y += cell_h;
+		i++;
+	}
+	return anim;
+}
 
-		anim->sprites[i].angle = 0;
+//potentially pass destination ptr instead of returning alloc
+
+SDLX_Anim	*SDLX_AnimLoadHorizontal(SDL_Texture *tex, int cycle, int cell_w, int cell_h, SDL_bool loop, int x_off, int y_off)
+{
+	SDLX_Anim	*anim;
+	SDLX_Display *display;
+	int i;
+	int x;
+	int y;
+
+	anim = calloc(1, sizeof(*anim));
+	anim->cycle = cycle;
+	anim->start = 0;
+	anim->loop = loop;
+	anim->srcs = calloc(cycle, sizeof(SDL_Rect));
+
+	i = 0;
+	x = x_off;
+	y = y_off;
+	anim->spriteSheet = tex;
+	while (i < cycle)
+	{
+		anim->srcs[i].x = x;
+		anim->srcs[i].y = y;
+		anim->srcs[i].h = cell_h;
+		anim->srcs[i].w = cell_w;
+
 		x += cell_w;
 		i++;
 	}
@@ -120,31 +169,50 @@ void SDLX_AnimationUpdate(void)
 
 	SDLX_Animator	*animator;
 	SDLX_AnimatorMeta *meta;
+	SDLX_AnimatorInfo *node;
 
-	i = 0;
-	while (i < _intern.animatorCount)
+	if (_intern.head)
 	{
-		animator = &_intern.animators[i].elem;
-		meta = _intern.animators[i].elem.metadata;
-		frame = animator->frameNo;
-		state = animator->state;
-		queue = animator->anims[state]->queue;
-
-		if (animator->anims[state]->loop != SDL_FALSE)
-			animator->frameNo = (frame + 1) % animator->anims[state]->cycle;
-		else
-			animator->frameNo += 1 * (frame < animator->anims[state]->cycle - 1);
-		if (animator->dstptr)
-			animator->anims[state]->sprites[frame].dstptr = animator->dstptr;
-		SDLX_RenderQueueAdd(queue, animator->anims[state]->sprites[frame]);
-		if (meta->stateLock == frame)
+		node = _intern.head->next;
+		i = 0;
+		// SDL_Log("HERE");
+		while (node != NULL)
 		{
-			SDL_Log("HERE FRAME %d\n", frame);
-			meta->stateLock = -1;
-			animator->state = meta->nextAnim;
-			animator->frameNo = 0;
+			if (node->elem.active == SDLX_TRUE && node->elem.anims)
+			{
+				animator = &node->elem;
+				state = animator->state;
+				frame = animator->frameNo;
+				meta = node->elem.metadata;
+				queue = animator->sprite.queue;
+		// SDL_Log("NOT THERE");
+
+				if (animator->anims[state]->loop != SDL_FALSE)
+					animator->frameNo = (frame + 1) % animator->anims[state]->cycle;
+				else
+					animator->frameNo += 1 * (frame < animator->anims[state]->cycle - 1);
+				animator->spriteptr->src = animator->anims[state]->srcs[frame];
+				// SDL_Log("TEXTURE ADDRESS  CREATED %p", animator->anims[state]->spriteSheet);
+				// SDL_Log("TEXTURE ADDRESS  CREATED  PTR %p", node->elem.spriteptr->spriteSheet);
+				// SDL_Log("Sprite (%d, %d) , w %d, h %d\n",
+							// animator->spriteptr->dst.x,
+							// animator->spriteptr->dst.y,
+							// animator->spriteptr->dst.w,
+							// animator->spriteptr->dst.h
+							// );
+
+				animator->spriteptr->spriteSheet = animator->anims[state]->spriteSheet;
+
+				SDLX_RenderQueueAdd(0, *animator->spriteptr);
+				if (meta->stateLock == frame)
+				{
+					meta->stateLock = -1;
+					animator->state = meta->nextAnim;
+					animator->frameNo = 0;
+				}
+			}
+			node = node->next;
 		}
-		i++;
 	}
 }
 
