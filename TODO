@@ -10,6 +10,20 @@
 - Enemy attack
 - Spellbook menu
 
+------------ Spells ----------------
+- Fireball
+- Ice Spike
+- Lightning bolt
+
+
+------------ Spell upgrade -----------
+- Fireball
+	- Permanent:
+	- Runwise
+
+
+
+
 -------------- Main Menu ----------------
 - Spellbook
 - Shop ?
@@ -26,4 +40,19 @@
 
 ------------- SDLX -----------------------
 
-- Review and change relationship between srpites, animators and UI.
+
+---------- Asssets ---------------
+- Scroll
+- Fireball hands
+- Idle hands
+- Menu icons
+	- Spellbook
+	- Shop
+	- Continue
+	- Scores
+
+- Spell icons
+	- Fireball
+	- Ice ball
+	- Lightning
+

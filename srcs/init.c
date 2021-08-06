@@ -108,29 +108,29 @@ void main_levelInit(void *arg)
 	beam = calloc(1, sizeof(SDLX_Anim));
 	beam[0] = SDLX_AnimLoadVertical(tex, 8, 128, 16, SDL_TRUE, 0, 0);
 
-	// tex = SDL_CreateTextureFromSurface(SDLX_DisplayGet()->renderer, IMG_Load("Assets/scroll.png"));
-	// anim = calloc(1, sizeof(SDLX_Anim));
-	// anim[0] = SDLX_AnimLoadHorizontal(tex, 1, 192, 192, SDL_FALSE, 0, 0);
-	// scroll.x = WIN_W - 200;
-	// scroll.y = WIN_H - 200;
-	// scroll.w = 192;
-	// scroll.h = 192;
-	// animator = SDLX_AnimatorCreate(NULL, anim, 1, &scroll);
+	tex = SDL_CreateTextureFromSurface(SDLX_DisplayGet()->renderer, IMG_Load("Assets/scroll.png"));
+	anim = calloc(1, sizeof(SDLX_Anim));
+	anim[0] = SDLX_AnimLoadHorizontal(tex, 1, 192, 192, SDL_FALSE, 0, 0);
+	scroll.x = WIN_W - 200;
+	scroll.y = WIN_H - 200;
+	scroll.w = 192;
+	scroll.h = 192;
+	animator = SDLX_AnimatorCreate(NULL, anim, 1, &scroll, NULL);
 
-	// tex = SDL_CreateTextureFromSurface(SDLX_DisplayGet()->renderer, IMG_Load("Assets/circle.png"));
-	// anim = calloc(1, sizeof(SDLX_Anim));
+	tex = SDL_CreateTextureFromSurface(SDLX_DisplayGet()->renderer, IMG_Load("Assets/circle.png"));
+	anim = calloc(1, sizeof(SDLX_Anim));
 
-	// dst.x = scroll.x + (scroll.w / 6);
-	// dst.y = scroll.y + ((scroll.h / 6) * 0.5);
-	// dst.w = (scroll.w / 6);
-	// dst.h = (scroll.h / 6);
-	// beamrect = dst;
-	// beamrect.w = 0;
-	// anim[0] = SDLX_AnimLoadHorizontal(tex, 1, 1800, 1800, SDL_TRUE, 0, 0);
-	// animator = SDLX_AnimatorCreate(NULL, anim, 1, &dst);
-	// animator->state = 0;
-	// ctx.buttons[2] = SDLX_GUIElem_Create(animator->spriteptr, "1", NULL, &DrawButtonHover, &NullGUIFunc, &NullGUIFunc, &DrawButtonTrigger);
-	// ctx.buttons[2]->data = (void *)SDLX_AnimatorCreate(NULL, beam, 1, &beamrect);
+	dst.x = scroll.x + (scroll.w / 6);
+	dst.y = scroll.y + ((scroll.h / 6) * 0.5);
+	dst.w = (scroll.w / 6);
+	dst.h = (scroll.h / 6);
+	beamrect = dst;
+	beamrect.w = 0;
+	anim[0] = SDLX_AnimLoadHorizontal(tex, 1, 1800, 1800, SDL_TRUE, 0, 0);
+	animator->state = 0;
+	ctx.buttons[2] = SDLX_GUIElem_Create(animator->spriteptr, "1", NULL, &DrawButtonHover, &NullGUIFunc, &NullGUIFunc, &DrawButtonTrigger);
+	ctx.buttons[2]->data = (void *)SDLX_AnimatorCreate(NULL, beam, 1, &beamrect, NULL);
+	animator = SDLX_AnimatorCreate(NULL, anim, 1, &dst, &ctx.buttons[2]->sprite);
 
 	// dst.x += (scroll.w / 6) * 1.5;
 	// beamrect.x = dst.x;
@@ -201,16 +201,16 @@ void main_levelInit(void *arg)
 	// ctx.buttons[11] = SDLX_GUIElem_Create(animator, "8", NULL, &NullGUIFunc, &NullGUIFunc, &NullGUIFunc, &NullGUIFunc);
 
 	SDLX_GUIElem_SetActive(ctx.buttons[2], SDLX_TRUE);
-	SDLX_GUIElem_SetActive(ctx.buttons[3], SDLX_TRUE);
-	SDLX_GUIElem_SetActive(ctx.buttons[4], SDLX_TRUE);
-	SDLX_GUIElem_SetActive(ctx.buttons[5], SDLX_TRUE);
-	SDLX_GUIElem_SetActive(ctx.buttons[6], SDLX_TRUE);
-	SDLX_GUIElem_SetActive(ctx.buttons[7], SDLX_TRUE);
-	SDLX_GUIElem_SetActive(ctx.buttons[8], SDLX_TRUE);
-	SDLX_GUIElem_SetActive(ctx.buttons[9], SDLX_TRUE);
-	SDLX_GUIElem_SetActive(ctx.buttons[10], SDLX_TRUE);
+	// SDLX_GUIElem_SetActive(ctx.buttons[3], SDLX_TRUE);
+	// SDLX_GUIElem_SetActive(ctx.buttons[4], SDLX_TRUE);
+	// SDLX_GUIElem_SetActive(ctx.buttons[5], SDLX_TRUE);
+	// SDLX_GUIElem_SetActive(ctx.buttons[6], SDLX_TRUE);
+	// SDLX_GUIElem_SetActive(ctx.buttons[7], SDLX_TRUE);
+	// SDLX_GUIElem_SetActive(ctx.buttons[8], SDLX_TRUE);
+	// SDLX_GUIElem_SetActive(ctx.buttons[9], SDLX_TRUE);
+	// SDLX_GUIElem_SetActive(ctx.buttons[10], SDLX_TRUE);
 	// SDLX_GUIElem_SetActive(ctx.buttons[11], SDLX_TRUE);
-	SDLX_GUIElem_SetDefaultTarget(ctx.buttons[3]);
+	SDLX_GUIElem_SetDefaultTarget(ctx.buttons[2]);
 
 	mainlvl.norder = 0;
 	mainlvl.drawing = SDLX_FALSE;
