@@ -3,3 +3,9 @@
 Coding while on break. Changed the animation system as well as the UI system so as to have them be
 independant. UI takes a sprite instead of an animator, and animator, additionally to the previous parameters,
 now takes a sprite ptr.
+
+08/06/2021
+
+- Refactor UI Loop
+- Create sprite function
+- Finish refactoring changes from new animation and UI system

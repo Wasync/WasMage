@@ -57,7 +57,11 @@ SDLX_Animator *SDLX_AnimatorCreate(SDLX_Animator *copy, SDLX_Anim **anims, int a
 		node->elem.sprite = *sprite;
 	}
 	else
+	{
+		SDLX_SpriteCreate(&node->elem.sprite, NULL, NULL, dst);
 		node->elem.spriteptr = &node->elem.sprite;
+		node->elem.spriteptr->srcptr = &node->elem.sprite.src;
+	}
 	if (dst)
 	{
 		node->elem.sprite.dst = *dst;
@@ -70,7 +74,7 @@ SDLX_Animator *SDLX_AnimatorCreate(SDLX_Animator *copy, SDLX_Anim **anims, int a
 		// node->elem.sprite.dstptr = dst;
 	}
 	// else
-		node->elem.sprite.dstptr = &node->elem.sprite.dst;
+	node->elem.sprite.dstptr = &node->elem.sprite.dst;
 
 	node->elem.sprite.animator = &node->elem;
 	node->elem.spriteptr->animator = &node->elem;
@@ -84,6 +88,7 @@ SDLX_Animator *SDLX_AnimatorCreate(SDLX_Animator *copy, SDLX_Anim **anims, int a
 	_intern.tail->next = node;
 	_intern.tail = node;
 	node->elem.active = SDLX_TRUE;
+
 	SDL_Log("Sprite %p(%d, %d) , w %d, h %d\n",
 	node->elem.spriteptr,
 	node->elem.spriteptr->dstptr->x,
@@ -91,6 +96,8 @@ SDLX_Animator *SDLX_AnimatorCreate(SDLX_Animator *copy, SDLX_Anim **anims, int a
 	node->elem.spriteptr->dstptr->w,
 	node->elem.spriteptr->dstptr->h
 	);
+
+	SDL_Log("Anim %p", node->elem.spriteptr->animator);
 
 	return &node->elem;
 }
@@ -191,7 +198,7 @@ void SDLX_AnimationUpdate(void)
 					animator->frameNo = (frame + 1) % animator->anims[state]->cycle;
 				else
 					animator->frameNo += 1 * (frame < animator->anims[state]->cycle - 1);
-				animator->spriteptr->src = animator->anims[state]->srcs[frame];
+				animator->spriteptr->srcptr = &animator->anims[state]->srcs[frame];
 				// SDL_Log("TEXTURE ADDRESS  CREATED %p", animator->anims[state]->spriteSheet);
 				// SDL_Log("TEXTURE ADDRESS  CREATED  PTR %p", node->elem.spriteptr->spriteSheet);
 				// SDL_Log("Sprite (%d, %d) , w %d, h %d\n",

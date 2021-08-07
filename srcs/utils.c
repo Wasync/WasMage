@@ -61,8 +61,24 @@ void DrawShape(void)
 	sprite->angle = MT_ToDegf(atan2(-(last[1] - input.mouse[1]), -(last[0] - input.mouse[0])));
 	if (sprite->dst.w > 200)
 		sprite->dst.w = 200;
-	SDL_Log("DIST %d, angle %d", sprite->dst.w, sprite->angle);
+	// SDL_Log("DIST %d, angle %d", sprite->dst.w, sprite->angle);
 
 	// SDL_RenderDrawLine(display->renderer, last[0] + 32, last[1] + 32, input.mouse[0], input.mouse[1]);
 	SDL_SetRenderDrawColor(display->renderer, 0, 0, 0, 255);
+}
+
+void renderSprites(void)
+{
+	SDLX_Display *display;
+	Context *ctx;
+
+	int i;
+
+	i = 0;
+	ctx = getCtx();
+	while (i < ctx->nsprites)
+	{
+		SDLX_RenderQueueAdd(0, ctx->sprites[i]);
+		i++;
+	}
 }

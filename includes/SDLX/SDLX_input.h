@@ -1,39 +1,8 @@
 #ifndef SDLX_INPUT_H
 # define SDLX_INPUT_H
 
-# include "SDLX_config.h"
-# include "SDLX.h"
+# include "SDLX_structs.h"
 
-typedef struct	SDLX_Input
-{
-	int input[INPUT_AMOUNT]; // This is just assuming no more than 5 keys will be mapped but that is a terrible asusmption. This should be allocated
-	int mouse[2];
-	int mouseDelta[2];
-	int mouse_click;
-	int key_down;
-}				SDLX_Input;
-
-
-typedef enum SDLX_Keys
-{
-	SDLX_UP = 1,
-	SDLX_DOWN,
-	SDLX_LEFT,
-	SDLX_RIGHT,
-	SDLX_PAUSE
-}			SDLX_Keys;
-
-typedef enum SDLX_InputType
-{
-	SDLX_MOUSE = 0,
-	SDLX_KEYBOARD,
-	SDLX_CONTROLLER,
-	SDLX_AXIS,
-	SDLX_GESTURE,
-	SDLX_KEYUP,
-	SDLX_KEYDOWN,
-	SDLX_KEYHELD
-}				SDLX_InputType;
 
 SDLX_Input	SDLX_InputGet();
 int			SDLX_DirReverse(int dir);

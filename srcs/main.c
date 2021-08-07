@@ -1,5 +1,5 @@
 #include "rush.h"
-// #include "debug.h"
+#include "debug.h"
 
 int main(void)
 {

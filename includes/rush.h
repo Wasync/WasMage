@@ -8,9 +8,11 @@
 typedef struct Context
 {
 	SDLX_GUIElem *buttons[100];
+	SDLX_Sprite  sprites[100];
 
 	void *lvl_data;
 	int nbuttons;
+	int nsprites;
 	int lvl;
 }			Context;
 
@@ -20,7 +22,6 @@ typedef struct MainLevel
 	SDLX_GUIElem *order[9];
 	int norder;
 	int drawing;
-
 }				MainLevel;
 
 
@@ -41,5 +42,7 @@ void test_level(void *args);
 
 void DrawShape(void);
 int GetShape(void);
+void renderSprites(void);
+
 
 #endif

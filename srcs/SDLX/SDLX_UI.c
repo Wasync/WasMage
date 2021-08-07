@@ -1,4 +1,6 @@
-#include "SDLX.h"
+#include "SDLX_structs.h"
+#include "SDLX_utils.h"
+#include "SDLX_input.h"
 
 # define GUICT 15
 # define U 0
@@ -18,7 +20,6 @@ typedef struct SDLX_GUIMeta
 	int type;
 	int active;
 	int selectStatus;
-	int clickStatus;
 	int cd;
 
 	SDLX_UIFunc		isSelectFn;
@@ -98,7 +99,6 @@ SDLX_GUIElem *SDLX_GUIElem_Create(SDLX_Sprite *sprite, const char *name,
 	_intern.GUI[i].meta.type			= SDLX_BUTTON;
 	_intern.GUI[i].meta.active			= SDLX_FALSE;
 	_intern.GUI[i].meta.selectStatus	= SDLX_NONE;
-	_intern.GUI[i].meta.clickStatus		= SDLX_NONE;
 
 	_intern.GUI[i].meta.isSelectFn 		= isSelectFn;
 
@@ -114,7 +114,7 @@ SDLX_GUIElem *SDLX_GUIElem_Create(SDLX_Sprite *sprite, const char *name,
 void	SDLX_GUIElem_SetActive(SDLX_GUIElem *elem, int isActive)
 {
 	elem->metadata->active = isActive;
-
+	SDL_Log("Button %p %p", elem, elem->sprite.animator);
 	if (elem->sprite.animator)
 	{
 		elem->sprite.animator->active = isActive;
@@ -145,36 +145,6 @@ void	SDLX_GUIElem_SetKbTarget(SDL_UNUSED int Target,SDLX_GUIElem *target, SDLX_G
 	target->metadata->neighbours[R] = right;
 }
 
-int _MouseUpdate(SDLX_GUIElem *elem)
-{
-	SDLX_Input input;
-	int select;
-	int mouseHover;
-
-	input = SDLX_InputGet();
-	elem->triggered = 0;
-	select = elem->metadata->selectStatus;
-	mouseHover = SDLX_MouseIntersectRect(input.mouse[0], input.mouse[1], *elem->sprite.dstptr);
-	if (!mouseHover && currentTarget == elem)
-	{
-		select = ENDSELECT;
-	}
-	else if (mouseHover && select == STARTSELECT)
-		select = STAY;
-	else if (mouseHover && select == SDLX_NONE)
-	{
-		select = STARTSELECT;
-	}
-	else if (!mouseHover && select != SDLX_NONE)
-		select = ENDSELECT;
-	if (elem->autotrigger)
-	{
-		elem->triggered = (input.mouse_click == SDL_MOUSEBUTTONDOWN);
-	}
-
-	return select;
-}
-
 int count(int *c, int max)
 {
 	if (!(*c))
@@ -185,6 +155,37 @@ int count(int *c, int max)
 	*c -= 1;
 	return 1;
 }
+
+int _MouseUpdate(SDLX_GUIElem *elem)
+{
+	SDLX_Input input;
+	int select;
+	int mouseHover;
+
+	input = SDLX_InputGet();
+	elem->triggered = 0;
+	select = elem->metadata->selectStatus;
+	mouseHover = SDLX_MouseInRect(input.mouse[0], input.mouse[1], *elem->sprite.dstptr);
+	if (!mouseHover && currentTarget == elem)
+	{
+		select = SDLX_FALSE;
+	}
+	else if (mouseHover && select == STARTSELECT)
+		select = SDLX_TRUE;
+	else if (mouseHover && select == SDLX_NONE)
+	{
+		select = SDLX_TRUE;
+	}
+	else if (!mouseHover && select != SDLX_NONE)
+		select = SDL_FALSE;
+	if (elem->autotrigger)
+	{
+		elem->triggered = (input.mouse_click == SDL_MOUSEBUTTONDOWN);
+	}
+
+	return select;
+}
+
 
 int _KBUpdate(SDLX_GUIElem *elem)
 {
@@ -216,57 +217,21 @@ int _KBUpdate(SDLX_GUIElem *elem)
 		select = STAY;
 	else if (select == WASSELECT)
 		select = STARTSELECT;
-	// SDL_Log("Selectstate kb %d\n", select);
 
 	return select;
 }
 
-void SDLX_DefaultUIUpdate(SDLX_GUIElem *elem)
+int SDLX_DefaultGUISelect(SDLX_GUIElem *elem)
 {
-	SDLX_GUIMeta *meta;
-	SDLX_Input 	input;
-	int mouseHover;
 	int select;
-	int click;
 
-	input = SDLX_InputGet();
-	meta = elem->metadata;
-	select = meta->selectStatus;
-	click = meta->clickStatus;
+	select = SDLX_FALSE;
+	if (selector & 1 || ((selector >> 1) & 1))
+		select = _MouseUpdate(elem);
+	// if (selector == 0)
+	// 	select = _KBUpdate(elem);
 
-	// if(elem->animator)
-	// SDL_RenderDrawRect(SDLX_DisplayGet()->renderer, elem->animator->dstptr);
-	if (meta->active)
-	{
-		if (meta->isSelectFn)
-		{
-			meta->isSelectFn(elem);
-		}
-		else
-		{
-			if (selector & 1 || ((selector >> 1) & 1))
-				select = _MouseUpdate(elem);
-			if (selector == 0)
-				select = _KBUpdate(elem);
-		}
-		if (select == STARTSELECT || select == STAY)
-			currentTarget = elem;
-		meta->selectStatus = select;
-		if (select != SDLX_NONE)
-		{
-			if (elem->triggered)
-			{
-				SDL_Log("Triggered %s\n", elem->name);
-				select = CLICKED;
-			}
-			meta->UIFuncs[select](elem);
-		}
-		if (meta->selectStatus == ENDSELECT)
-			meta->selectStatus = SDLX_NONE;
-
-		// if (elem->autotrigger) Maybe?
-			elem->triggered = 0;
-	}
+	return select;
 }
 
 int		_GetSelector(void)
@@ -281,7 +246,7 @@ int		_GetSelector(void)
 	newselector = 0;
 	for (int i = 0; i < _intern.GUICount; i++)
 	{
-		if (SDLX_MouseIntersectRect(input.mouse[0], input.mouse[1], _intern.GUI[i].elem.sprite.dst))
+		if (SDLX_MouseInRect(input.mouse[0], input.mouse[1], _intern.GUI[i].elem.sprite.dst))
 		{
 			newselector = 1;
 			break ;
@@ -306,17 +271,40 @@ int		_GetSelector(void)
 void SDLX_GUIUpdate(void)
 {
 	int i;
+	SDLX_GUIMeta *meta;
+	SDLX_Input 	input;
+	int mouseHover;
+	int select;
+	int oldSelect;
+
 
 	_GetSelector();
 	i = 0;
 
-	SDL_SetRenderDrawColor(SDLX_DisplayGet()->renderer, 0, 0, 255, 255);
 	while (i < _intern.GUICount)
 	{
-		SDLX_DefaultUIUpdate(&(_intern.GUI[i].elem));
-		// SDL_Log("Done GUI %d\n", i);
+		meta = &_intern.GUI[i].meta;
+		if (meta->active)
+		{
+			select =  meta->isSelectFn(&_intern.GUI[i].elem);
+			oldSelect = meta->selectStatus;
 
-		i++;
+			if (select == SDLX_TRUE && oldSelect == SDLX_FALSE)
+				meta->UIFuncs[STARTSELECT](&_intern.GUI[i].elem);
+			else if (select == SDLX_TRUE && oldSelect == SDLX_TRUE)
+				meta->UIFuncs[STAY](&_intern.GUI[i].elem);
+			else if (select == SDLX_FALSE && oldSelect == SDLX_TRUE)
+				meta->UIFuncs[ENDSELECT](&_intern.GUI[i].elem);
+			// SDL_Log("FUNC");
+			meta->selectStatus = select;
+			if (select != SDLX_FALSE && _intern.GUI[i].elem.triggered)
+			{
+				SDL_Log("Triggered %s\n", _intern.GUI[i].elem.name);
+				meta->UIFuncs[CLICKED](&_intern.GUI[i].elem);
+			}
+			// if (&_intern.GUI[i]->autotrigger) Maybe?
+			_intern.GUI[i].elem.triggered = 0;
+		}
+			i++;
 	}
-	SDL_SetRenderDrawColor(SDLX_DisplayGet()->renderer, 0, 0, 0, 255);
 }

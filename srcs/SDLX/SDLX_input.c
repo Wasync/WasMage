@@ -117,7 +117,7 @@ int SDLX_GetKeyMapState(int key)
 }
 
 
-int _GetInputState(SDLX_KeyMap 	*map_node)
+void _GetInputState(SDLX_KeyMap 	*map_node)
 {
 	const Uint8		*keyboard;
 	int input_val;

@@ -20,7 +20,7 @@ void main_level(void *arg)
 		if (input.mouse_click == SDL_MOUSEBUTTONUP)
 			SDL_Log("Shape %d\n", GetShape());
 	}
-
+	renderSprites();
 }
 
 void test_level(void *arg)
@@ -29,5 +29,4 @@ void test_level(void *arg)
 
 
 }
-
 

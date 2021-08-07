@@ -17,7 +17,8 @@ void debug(Context *ctx)
 	rect.y = input.mouse[1] - 32;
 
 	if (input.mouse_click > 0)
-		SDL_Log("Mouse (%d,%d)\n", input.mouse[0], input.mouse[1]);
+		SDL_Log("Mouse (%d,%d) (%d,%d)\n", input.mouse[0], input.mouse[1],
+		input.mouse[0] - 471, input.mouse[1] -  587);
 
 	SDL_RenderDrawRect(display->renderer, &rect);
 	SDL_SetRenderDrawColor(display->renderer, 0, 0, 0, 255);

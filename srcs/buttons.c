@@ -1,34 +1,38 @@
 #include "rush.h"
 
-void NullGUIFunc(SDLX_GUIElem *elem){return ;};
-
-void MenuHover(SDLX_GUIElem *elem)
+int MenuHover(SDLX_GUIElem *elem)
 {
 	SDLX_Animator_StateSet(elem->sprite.animator, 1, SDLX_NONE);
+	return 0;
 }
 
-void StartClick(SDLX_GUIElem *elem)
+int StartClick(SDLX_GUIElem *elem)
 {
 	SDLX_Animator_StateSet(elem->sprite.animator, 2, SDLX_NONE);
 	SDLX_LevelManagerSwitch(1, NULL);
 	SDL_Log("HIT start\n");
+
+	return 0;
 }
 
-void TestClick(SDLX_GUIElem *elem)
+int TestClick(SDLX_GUIElem *elem)
 {
 	SDLX_Animator_StateSet(elem->sprite.animator, 2, SDLX_NONE);
 	SDLX_LevelManagerSwitch(1, NULL);
 	SDL_Log("HIT start\n");
+	return 0;
 }
 
-void ExitClick(SDLX_GUIElem *elem)
+int ExitClick(SDLX_GUIElem *elem)
 {
 	SDLX_Animator_StateSet(elem->sprite.animator, 2, SDLX_NONE);
 	SDLX_LevelManagerSwitch(0, NULL);
 	SDL_Log("HIT exit\n");
+
+	return 0;
 }
 
-void DrawButtonHover(SDLX_GUIElem *elem)
+int DrawButtonHover(SDLX_GUIElem *elem)
 {
 	Context *ctx;
 	MainLevel *lvlData;
@@ -43,10 +47,10 @@ void DrawButtonHover(SDLX_GUIElem *elem)
 		lvlData->norder++;
 		SDLX_GUIElem_SetActive(elem, SDLX_FALSE);
 	}
-
+	return 0;
 }
 
-void DrawButtonTrigger(SDLX_GUIElem *elem)
+int DrawButtonTrigger(SDLX_GUIElem *elem)
 {
 	Context *ctx;
 	MainLevel *lvlData;
@@ -57,4 +61,6 @@ void DrawButtonTrigger(SDLX_GUIElem *elem)
 	lvlData->norder++;
 	lvlData->drawing = SDLX_TRUE;
 	SDLX_GUIElem_SetActive(elem, SDLX_FALSE);
+
+	return 0;
 }
