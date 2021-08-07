@@ -143,8 +143,8 @@ void main_levelInit(void *arg)
 	dst.x = scroll.x + 78;
 	dst.y = scroll.y + 68;
 	ctx.buttons[2] = SDLX_GUIElem_Create(NULL, "0",NULL, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
-	SDLX_SpriteCreate(&ctx.buttons[2]->sprite, NULL, NULL, &dst);
-	ctx.buttons[2]->data = (void *)SDLX_AnimatorCreate(NULL, beam, 1, &dst, &ctx.buttons[2]->sprite);
+	// SDLX_SpriteCreate(&ctx.buttons[2]->sprite, NULL, NULL, &dst);
+	// ctx.buttons[2]->data = (void *)SDLX_AnimatorCreate(NULL, beam, 1, &dst, &ctx.buttons[2]->sprite);
 
 	// ctx.buttons[10]->data = (void *)SDLX_AnimatorCreate(NULL, beam, 1, &beamrect);
 
