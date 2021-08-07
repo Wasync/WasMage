@@ -165,7 +165,7 @@ int _MouseUpdate(SDLX_GUIElem *elem)
 	input = SDLX_InputGet();
 	elem->triggered = 0;
 	select = elem->metadata->selectStatus;
-	mouseHover = SDLX_MouseInRect(input.mouse[0], input.mouse[1], *elem->sprite.dstptr);
+	mouseHover = SDLX_MouseInRect(input.mouse.x, input.mouse.y, *elem->sprite.dstptr);
 	if (!mouseHover && currentTarget == elem)
 	{
 		select = SDLX_FALSE;
@@ -178,7 +178,7 @@ int _MouseUpdate(SDLX_GUIElem *elem)
 	}
 	else if (!mouseHover && select != SDLX_NONE)
 		select = SDL_FALSE;
-	if (elem->autotrigger)
+	if (elem->autotrigger == SDLX_TRUE)
 	{
 		elem->triggered = (input.mouse_click == SDL_MOUSEBUTTONDOWN);
 	}
@@ -201,9 +201,9 @@ int _KBUpdate(SDLX_GUIElem *elem)
 			if ((KEYSDATA[i] == SDLX_KEYDOWN || (KEYSDATA[i] == SDLX_KEYHELD && !count(&(meta->cd), 10)))
 			&& elem->metadata->neighbours[i])
 			{
-				select = ENDSELECT;
+				select = 0;
 				currentTarget = elem->metadata->neighbours[i];
-				currentTarget->metadata->selectStatus = WASSELECT;
+				currentTarget->metadata->selectStatus = 1;
 				KEYSDATA[i] = SDLX_NONE;
 				break ;
 			}
@@ -213,10 +213,6 @@ int _KBUpdate(SDLX_GUIElem *elem)
 			elem->triggered = (KEYSDATA[4] == SDLX_KEYDOWN);
 		}
 	}
-	if (select == STARTSELECT && elem == currentTarget)
-		select = STAY;
-	else if (select == WASSELECT)
-		select = STARTSELECT;
 
 	return select;
 }
@@ -228,8 +224,8 @@ int SDLX_DefaultGUISelect(SDLX_GUIElem *elem)
 	select = SDLX_FALSE;
 	if (selector & 1 || ((selector >> 1) & 1))
 		select = _MouseUpdate(elem);
-	// if (selector == 0)
-	// 	select = _KBUpdate(elem);
+	if (selector == 0)
+		select = _KBUpdate(elem);
 
 	return select;
 }
@@ -246,7 +242,7 @@ int		_GetSelector(void)
 	newselector = 0;
 	for (int i = 0; i < _intern.GUICount; i++)
 	{
-		if (SDLX_MouseInRect(input.mouse[0], input.mouse[1], _intern.GUI[i].elem.sprite.dst))
+		if (_intern.GUI[i].meta.isSelectFn(&_intern.GUI[i].elem))
 		{
 			newselector = 1;
 			break ;
@@ -303,7 +299,7 @@ void SDLX_GUIUpdate(void)
 				meta->UIFuncs[CLICKED](&_intern.GUI[i].elem);
 			}
 			// if (&_intern.GUI[i]->autotrigger) Maybe?
-			_intern.GUI[i].elem.triggered = 0;
+			_intern.GUI[i].elem.triggered = SDLX_FALSE;
 		}
 			i++;
 	}

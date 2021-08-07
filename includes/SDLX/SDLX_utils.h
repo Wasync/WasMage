@@ -11,5 +11,6 @@ SDL_Texture 	*SDLX_LoadTexture(char *path, SDLX_Display *display);
 void			SDLX_SpriteCreate(SDLX_Sprite *spriteDst, SDL_Texture *tex, SDL_Rect *src, SDL_Rect *dst);
 
 static int	SDLX_NullGUIFunc(SDLX_GUIElem *elem){return 0;};
+int SDLX_PointInCircle(SDL_Point point, SDLX_Circle circle);
 
 #endif

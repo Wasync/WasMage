@@ -12,4 +12,6 @@ int DrawButtonTrigger(SDLX_GUIElem *elem);
 
 int DrawButtonHover(SDLX_GUIElem *elem);
 
+int isHoverDraw(SDLX_GUIElem *elem);
+
 #endif

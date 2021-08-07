@@ -1,6 +1,5 @@
 
 -------------- CORE_GAMEPLAY --------------
-- Fix the angle in the drawing matrix
 - Find the correct spell based on ID
 - Set the spell as active
 - Cast from hand to target in correct amount of time

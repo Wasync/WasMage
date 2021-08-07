@@ -137,15 +137,123 @@ void main_levelInit(void *arg)
 		Mouse (559,755) (88,168)
 		Mouse (581,755) (110,168)
 		Mouse (545,791) (74,204)
+
+		: Mouse (545,654) (74,67)
+2021-08-07 12:26:41.547 rush[22737:393407] INFO: Shape
+2021-08-07 12:26:41.548 rush[22737:393407] INFO: Shape 0
+2021-08-07 12:26:45.035 rush[22737:393407] INFO: Mouse (532,686) (61,99)
+2021-08-07 12:26:47.214 rush[22737:393407] INFO: Mouse (510,687) (39,100)
+2021-08-07 12:26:49.097 rush[22737:393407] INFO: Mouse (553,688) (82,101)
+2021-08-07 12:26:50.175 rush[22737:393407] INFO: Mouse (575,690) (104,103)
+2021-08-07 12:26:51.063 rush[22737:393407] INFO: Mouse (565,723) (94,136)
+2021-08-07 12:26:53.542 rush[22737:393407] INFO: Mouse (543,723) (72,136)
+2021-08-07 12:26:54.793 rush[22737:393407] INFO: Mouse (521,723) (50,136)
+2021-08-07 12:26:56.562 rush[22737:393407] INFO: Mouse (510,753) (39,166)
+2021-08-07 12:26:58.348 rush[22737:393407] INFO: Mouse (531,753) (60,166)
+2021-08-07 12:26:59.338 rush[22737:393407] INFO: Mouse (557,754) (86,167)
+2021-08-07 12:27:00.506 rush[22737:393407] INFO: Mouse (580,757) (109,170)
+2021-08-07 12:27:02.612 rush[22737:393407] INFO: Mouse (546,786) (75,199)
 		*/
+
+///TOP MOST POINT///
 	dst.h = 10;
 	dst.w = 10;
-	dst.x = scroll.x + 78;
-	dst.y = scroll.y + 68;
-	ctx.buttons[2] = SDLX_GUIElem_Create(NULL, "0",NULL, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
-	// SDLX_SpriteCreate(&ctx.buttons[2]->sprite, NULL, NULL, &dst);
-	// ctx.buttons[2]->data = (void *)SDLX_AnimatorCreate(NULL, beam, 1, &dst, &ctx.buttons[2]->sprite);
+	tex = SDLX_LoadTexture("Assets/circle.png", SDLX_DisplayGet());
+	dst.x = scroll.x + 68;
+	dst.y = scroll.y + 60;
+	SDLX_SpriteCreate(&ctx.sprites[ctx.nsprites] , tex, NULL, &dst);
+	ctx.sprites[ctx.nsprites].srcptr = NULL;
+	ctx.nsprites++;
 
+
+
+	ctx.buttons[2] = SDLX_GUIElem_Create(NULL, "0", &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
+	SDLX_AnimatorCreate(NULL, beam, 1, &dst, &ctx.buttons[2]->sprite);
+	ctx.buttons[2]->sprite.animator->active = SDLX_FALSE;
+	ctx.buttons[2]->autotrigger = SDLX_TRUE;
+
+// TOP LINE ///
+	dst.x = scroll.x + 32;
+	dst.y = scroll.y + 93;
+	SDLX_SpriteCreate(&ctx.sprites[ctx.nsprites] , tex, NULL, &dst);
+	ctx.sprites[ctx.nsprites].srcptr = NULL;
+	ctx.nsprites++;
+	// ctx.buttons[10]->data = (void *)SDLX_AnimatorCreate(NULL, beam, 1, &beamrect);
+	dst.x = scroll.x + 55;
+	dst.y = scroll.y + 93;
+	SDLX_SpriteCreate(&ctx.sprites[ctx.nsprites] , tex, NULL, &dst);
+	ctx.sprites[ctx.nsprites].srcptr = NULL;
+	ctx.nsprites++;
+
+	dst.x = scroll.x + 80;
+	dst.y = scroll.y + 93;
+	SDLX_SpriteCreate(&ctx.sprites[ctx.nsprites] , tex, NULL, &dst);
+	ctx.sprites[ctx.nsprites].srcptr = NULL;
+	ctx.nsprites++;
+
+	dst.x = scroll.x + 104;
+	dst.y = scroll.y + 93;
+	SDLX_SpriteCreate(&ctx.sprites[ctx.nsprites] , tex, NULL, &dst);
+	ctx.sprites[ctx.nsprites].srcptr = NULL;
+	ctx.nsprites++;
+
+//// MIDDLE LINE //////////
+
+	dst.x = scroll.x + 45;
+	dst.y = scroll.y + 128;
+	SDLX_SpriteCreate(&ctx.sprites[ctx.nsprites] , tex, NULL, &dst);
+	ctx.sprites[ctx.nsprites].srcptr = NULL;
+	ctx.nsprites++;
+
+	dst.x = scroll.x + 68;
+	dst.y = scroll.y + 128;
+	SDLX_SpriteCreate(&ctx.sprites[ctx.nsprites] , tex, NULL, &dst);
+	ctx.sprites[ctx.nsprites].srcptr = NULL;
+	ctx.nsprites++;
+
+	dst.x = scroll.x + 90;
+	dst.y = scroll.y + 128;
+	SDLX_SpriteCreate(&ctx.sprites[ctx.nsprites] , tex, NULL, &dst);
+	ctx.sprites[ctx.nsprites].srcptr = NULL;
+	ctx.nsprites++;
+
+
+
+
+
+
+//// BOTTOM LINE ////////
+	dst.x = scroll.x + 32;
+	dst.y = scroll.y + 160;
+	SDLX_SpriteCreate(&ctx.sprites[ctx.nsprites] , tex, NULL, &dst);
+	ctx.sprites[ctx.nsprites].srcptr = NULL;
+	ctx.nsprites++;
+	// ctx.buttons[10]->data = (void *)SDLX_AnimatorCreate(NULL, beam, 1, &beamrect);
+	dst.x = scroll.x + 55;
+	dst.y = scroll.y + 160;
+	SDLX_SpriteCreate(&ctx.sprites[ctx.nsprites] , tex, NULL, &dst);
+	ctx.sprites[ctx.nsprites].srcptr = NULL;
+	ctx.nsprites++;
+
+	dst.x = scroll.x + 80;
+	dst.y = scroll.y + 160;
+	SDLX_SpriteCreate(&ctx.sprites[ctx.nsprites] , tex, NULL, &dst);
+	ctx.sprites[ctx.nsprites].srcptr = NULL;
+	ctx.nsprites++;
+
+	dst.x = scroll.x + 104;
+	dst.y = scroll.y + 160;
+	SDLX_SpriteCreate(&ctx.sprites[ctx.nsprites] , tex, NULL, &dst);
+	ctx.sprites[ctx.nsprites].srcptr = NULL;
+	ctx.nsprites++;
+
+
+//BOTTOM MOST POINT
+	dst.x = scroll.x + 68;
+	dst.y = scroll.y + 195;
+	SDLX_SpriteCreate(&ctx.sprites[ctx.nsprites] , tex, NULL, &dst);
+	ctx.sprites[ctx.nsprites].srcptr = NULL;
+	ctx.nsprites++;
 	// ctx.buttons[10]->data = (void *)SDLX_AnimatorCreate(NULL, beam, 1, &beamrect);
 
 	//probably replace the below with query texture to get the dimensions correct, just in case

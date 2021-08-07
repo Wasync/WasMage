@@ -63,8 +63,8 @@ typedef enum SDLX_InputType
 typedef struct	SDLX_Input
 {
 	int input[INPUT_AMOUNT]; // This is just assuming no more than 5 keys will be mapped but that is a terrible asusmption. This should be allocated
-	int mouse[2];
-	int mouseDelta[2];
+	SDL_Point mouse;
+	SDL_Point mouse_delta;
 	int mouse_click;
 	int key_down;
 }				SDLX_Input;

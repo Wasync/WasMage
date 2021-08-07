@@ -9,3 +9,9 @@ now takes a sprite ptr.
 - Refactor UI Loop
 - Create sprite function
 - Finish refactoring changes from new animation and UI system
+
+08/08/2021
+
+- Finish refactor
+- Cleanup some debug function
+- Setup Spellscroll position

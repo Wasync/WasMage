@@ -13,13 +13,13 @@ int GetShape(void)
 	number = 0;
 	ctx = getCtx();
 	lvl =  (MainLevel *)ctx->lvl_data;
-	SDL_Log("Shape\n");
+
 	while (i < lvl->norder)
 	{
 		number += atoi(lvl->order[i]->name);
 		number *= 10;
 
-		SDLX_GUIElem_SetActive(lvl->order[i], SDLX_TRUE);
+		lvl->order[i]->sprite.animator->active = SDLX_FALSE;
 		i++;
 	}
 	lvl->norder = 0;
@@ -47,23 +47,13 @@ void DrawShape(void)
 	last[0] = lvl->order[0]->sprite.dst.x;
 	last[1] = lvl->order[0]->sprite.dst.y;
 	SDL_SetRenderDrawColor(display->renderer, 255, 0, 0, 255);
-	// SDL_Log("HERE");
-	while (i < lvl->norder)
-	{
 
-		last[0] = lvl->order[i]->sprite.dst.x + 32;
-		last[1] = lvl->order[i]->sprite.dst.y + 32;
-		i++;
-	}
-	sprite = &lvl->order[i - 1]->sprite;
-	sprite->dst.w = SDL_sqrt(MT_GetDistance(last[0] , last[1] , input.mouse[0], input.mouse[1]));
-	// anim->angle = MT_V2Heading180_Deg((MT_Vector2){last[0] - input.mouse[0], last[1] - input.mouse[1]});
-	sprite->angle = MT_ToDegf(atan2(-(last[1] - input.mouse[1]), -(last[0] - input.mouse[0])));
+	sprite = &lvl->order[lvl->norder - 1]->sprite;
+	sprite->dst.w = SDL_sqrt(MT_GetDistance(sprite->dst.x , sprite->dst.y , input.mouse.x, input.mouse.y));
+	sprite->angle = MT_ToDegf(atan2(-(sprite->dst.y - input.mouse.y), -(sprite->dst.x - input.mouse.x)));
 	if (sprite->dst.w > 200)
 		sprite->dst.w = 200;
-	// SDL_Log("DIST %d, angle %d", sprite->dst.w, sprite->angle);
 
-	// SDL_RenderDrawLine(display->renderer, last[0] + 32, last[1] + 32, input.mouse[0], input.mouse[1]);
 	SDL_SetRenderDrawColor(display->renderer, 0, 0, 0, 255);
 }
 

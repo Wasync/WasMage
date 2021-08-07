@@ -148,8 +148,8 @@ void SDLX_InputUpdate(SDL_Event SDL_UNUSED event)
 
 	map_node = keymap;
 
-	SDL_GetMouseState(&input.mouse[0], &input.mouse[1]);
-	SDL_GetRelativeMouseState(&input.mouseDelta[0], &input.mouseDelta[1]);
+	SDL_GetMouseState(&input.mouse.x, &input.mouse.y);
+	SDL_GetRelativeMouseState(&input.mouse_delta.x, &input.mouse_delta.y);
 	SDL_PumpEvents();
 
 	SDLX_InputResetBuffer();

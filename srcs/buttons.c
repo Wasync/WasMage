@@ -32,6 +32,22 @@ int ExitClick(SDLX_GUIElem *elem)
 	return 0;
 }
 
+int isHoverDraw(SDLX_GUIElem *elem)
+{
+	SDLX_Input input;
+
+	input = SDLX_InputGet();
+
+	if (SDLX_PointInCircle(input.mouse,
+	 (SDLX_Circle){elem->sprite.dst.x + 2, elem->sprite.dst.y + 5, 7}))
+	{
+		if (input.mouse_click == SDL_MOUSEBUTTONDOWN)
+			elem->triggered = SDLX_TRUE;
+		return SDLX_TRUE;
+	}
+	return SDLX_FALSE;
+}
+
 int DrawButtonHover(SDLX_GUIElem *elem)
 {
 	Context *ctx;
@@ -45,7 +61,7 @@ int DrawButtonHover(SDLX_GUIElem *elem)
 	{
 		lvlData->order[lvlData->norder] = elem;
 		lvlData->norder++;
-		SDLX_GUIElem_SetActive(elem, SDLX_FALSE);
+		SDLX_GUIElem_SetActive(elem, SDLX_TRUE);
 	}
 	return 0;
 }
@@ -56,11 +72,12 @@ int DrawButtonTrigger(SDLX_GUIElem *elem)
 	MainLevel *lvlData;
 	ctx = getCtx();
 
+		SDL_Log("Is Trigger %s", elem->name);
 	lvlData = (MainLevel *)(ctx->lvl_data);
 	lvlData->order[0] = elem;
 	lvlData->norder++;
 	lvlData->drawing = SDLX_TRUE;
-	SDLX_GUIElem_SetActive(elem, SDLX_FALSE);
+	elem->sprite.animator->active = SDLX_TRUE;
 
 	return 0;
 }

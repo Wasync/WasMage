@@ -49,3 +49,13 @@ int	SDLX_MouseInRect(int x, int y, SDL_Rect rect)
 		return SDLX_TRUE;
 	return SDLX_FALSE;
 }
+
+int SDLX_PointInCircle(SDL_Point point, SDLX_Circle circle)
+{
+	return (
+			point.x <= circle.x + circle.radius
+		&&	point.x >= circle.x - circle.radius
+		&&	point.y <= circle.y + circle.radius
+		&&	point.y >= circle.y - circle.radius
+	);
+}
