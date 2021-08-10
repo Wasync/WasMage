@@ -16,15 +16,36 @@ int GetShape(void)
 
 	while (i < lvl->norder)
 	{
-		number += atoi(lvl->order[i]->name);
-		number *= 10;
+		number |= (1 << (atoi(lvl->order[i]->name) + i));
+		// number *= 10;
 
+		lvl->order[i]->sprite.dst.w = 0;
 		lvl->order[i]->sprite.animator->active = SDLX_FALSE;
+		lvl->order[i]->data = &ctxFalse;
 		i++;
 	}
 	lvl->norder = 0;
 	lvl->drawing = SDLX_FALSE;
 	return number;
+}
+
+void CastSpell(int id)
+{
+	int i;
+	Context *ctx;
+
+	ctx = getCtx();
+	i  = 0;
+SDL_Log("Got %d", id);
+	while (i < 20)
+	{
+		if (ctx->spells[i].id == id)
+		{
+			ctx->current = &ctx->spells[i];
+			break ;
+		}
+		i++;
+	}
 }
 
 void DrawShape(void)
@@ -35,21 +56,19 @@ void DrawShape(void)
 
 	Context *ctx;
 	MainLevel *lvl;
-	int i;
-	int last[2];
 
 	ctx = getCtx();
 	input = SDLX_InputGet();
 	display = SDLX_DisplayGet();
 
-	i = 1;
 	lvl =  (MainLevel *)ctx->lvl_data;
-	last[0] = lvl->order[0]->sprite.dst.x;
-	last[1] = lvl->order[0]->sprite.dst.y;
-	SDL_SetRenderDrawColor(display->renderer, 255, 0, 0, 255);
 
+	SDL_SetRenderDrawColor(display->renderer, 255, 0, 0, 255);
+	// SDL_Log("NUM %d", lvl->norder);
 	sprite = &lvl->order[lvl->norder - 1]->sprite;
 	sprite->dst.w = SDL_sqrt(MT_GetDistance(sprite->dst.x , sprite->dst.y , input.mouse.x, input.mouse.y));
+	// sprite->dst.w += input.mouse_delta.x + input.mouse_delta.y; potentially something to be done with mouse delta
+	// to avoid the sqrt
 	sprite->angle = MT_ToDegf(atan2(-(sprite->dst.y - input.mouse.y), -(sprite->dst.x - input.mouse.x)));
 	if (sprite->dst.w > 200)
 		sprite->dst.w = 200;

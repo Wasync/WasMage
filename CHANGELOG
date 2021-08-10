@@ -15,3 +15,12 @@ now takes a sprite ptr.
 - Finish refactor
 - Cleanup some debug function
 - Setup Spellscroll position
+
+08/09/2021
+
+- Cast Spell
+- Spell move to target
+
+08/10/2021
+
+- Bind Cast spell to spell ID

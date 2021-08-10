@@ -1,13 +1,19 @@
 
+Add cooldown to spell
+	Potentially keep ref to parent & decrease cd || Set recharge anim state & wait until anim done
+	State : 0 -> Ready
+			1 -> Charging
+			2 -> launching;
+	If state != 0, can't cast
+
 -------------- CORE_GAMEPLAY --------------
-- Find the correct spell based on ID
-- Set the spell as active
-- Cast from hand to target in correct amount of time
 - Mana substracted & regeneration
 - Enemy walk towards crysal
 - Enemy collision
 - Enemy attack
 - Spellbook menu
+- Pause Menu
+
 
 ------------ Spells ----------------
 - Fireball

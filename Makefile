@@ -37,6 +37,7 @@ SRCS_NAMES =								\
 	levels\
 	buttons\
 	init\
+	spells\
 
 C_FILES =				\
 	$(SRCS_NAMES) 		\

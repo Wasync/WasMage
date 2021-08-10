@@ -39,7 +39,7 @@ int isHoverDraw(SDLX_GUIElem *elem)
 	input = SDLX_InputGet();
 
 	if (SDLX_PointInCircle(input.mouse,
-	 (SDLX_Circle){elem->sprite.dst.x + 2, elem->sprite.dst.y + 5, 7}))
+	 (SDLX_Circle){elem->sprite.dst.x + 2, elem->sprite.dst.y + 5, 8}))
 	{
 		if (input.mouse_click == SDL_MOUSEBUTTONDOWN)
 			elem->triggered = SDLX_TRUE;
@@ -57,11 +57,26 @@ int DrawButtonHover(SDLX_GUIElem *elem)
 	lvlData = ctx->lvl_data;
 	lvlData = (MainLevel *)(ctx->lvl_data);
 
-	if (lvlData->drawing == SDLX_TRUE)
+	if (lvlData->drawing == SDLX_TRUE && *(int *)elem->data == SDLX_FALSE)
 	{
+		if(lvlData->norder != 0)
+		{
+			lvlData->order[lvlData->norder - 1]->sprite.dst.w += 4;
+			// lvlData->order[lvlData->norder - 1]->sprite.angle = MT_ToDegf(
+			// 	atan2(-(lvlData->order[lvlData->norder - 1]->sprite.dst.y
+			// 			- elem->sprite.dst.y),
+			// 		-(lvlData->order[lvlData->norder - 1]->sprite.dst.x
+			// 			- elem->sprite.dst.x)));
+		}
+		// Fix by changing w toditance between them
+		// to be correct but can't be done without extra sqrt
+		// & will be a little off anyways
+		// AVoid for now
+		// }
 		lvlData->order[lvlData->norder] = elem;
+		elem->sprite.animator->active = SDLX_TRUE;
+		elem->data = &ctxTrue;
 		lvlData->norder++;
-		SDLX_GUIElem_SetActive(elem, SDLX_TRUE);
 	}
 	return 0;
 }
@@ -78,6 +93,7 @@ int DrawButtonTrigger(SDLX_GUIElem *elem)
 	lvlData->norder++;
 	lvlData->drawing = SDLX_TRUE;
 	elem->sprite.animator->active = SDLX_TRUE;
+	elem->data = &ctxTrue;;
 
 	return 0;
 }

@@ -76,28 +76,30 @@ SDLX_Animator *SDLX_AnimatorCreate(SDLX_Animator *copy, SDLX_Anim **anims, int a
 	// else
 	node->elem.sprite.dstptr = &node->elem.sprite.dst;
 
+	// SDL_Log("HERE");
 	node->elem.sprite.animator = &node->elem;
 	node->elem.spriteptr->animator = &node->elem;
 	node->elem.frameNo = 0;
 	node->elem.state = 0;
+	// SDL_Log("HERE");
 
 	node->meta.stateLock = -1;
 	node->meta.nextAnim = -1;
 	node->elem.metadata = &node->meta;
 
+	// SDL_Log("HERE");
 	_intern.tail->next = node;
 	_intern.tail = node;
 	node->elem.active = SDLX_TRUE;
+	// SDL_Log("Sprite %p(%d, %d) , w %d, h %d\n",
+	// node->elem.spriteptr,
+	// node->elem.spriteptr->dstptr->x,
+	// node->elem.spriteptr->dstptr->y,
+	// node->elem.spriteptr->dstptr->w,
+	// node->elem.spriteptr->dstptr->h
+	// );
 
-	SDL_Log("Sprite %p(%d, %d) , w %d, h %d\n",
-	node->elem.spriteptr,
-	node->elem.spriteptr->dstptr->x,
-	node->elem.spriteptr->dstptr->y,
-	node->elem.spriteptr->dstptr->w,
-	node->elem.spriteptr->dstptr->h
-	);
-
-	SDL_Log("Anim %p", node->elem.spriteptr->animator);
+	// SDL_Log("Anim %p", node->elem.spriteptr->animator);
 
 	return &node->elem;
 }
@@ -192,21 +194,12 @@ void SDLX_AnimationUpdate(void)
 				frame = animator->frameNo;
 				meta = node->elem.metadata;
 				queue = animator->sprite.queue;
-		// SDL_Log("NOT THERE");
 
 				if (animator->anims[state]->loop != SDL_FALSE)
 					animator->frameNo = (frame + 1) % animator->anims[state]->cycle;
 				else
 					animator->frameNo += 1 * (frame < animator->anims[state]->cycle - 1);
 				animator->spriteptr->srcptr = &animator->anims[state]->srcs[frame];
-				// SDL_Log("TEXTURE ADDRESS  CREATED %p", animator->anims[state]->spriteSheet);
-				// SDL_Log("TEXTURE ADDRESS  CREATED  PTR %p", node->elem.spriteptr->spriteSheet);
-				// SDL_Log("Sprite (%d, %d) , w %d, h %d\n",
-							// animator->spriteptr->dst.x,
-							// animator->spriteptr->dst.y,
-							// animator->spriteptr->dst.w,
-							// animator->spriteptr->dst.h
-							// );
 
 				animator->spriteptr->spriteSheet = animator->anims[state]->spriteSheet;
 
