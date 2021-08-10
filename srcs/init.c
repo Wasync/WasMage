@@ -54,7 +54,7 @@ void main_menuInit(void *arg)
 	dst.w = 64 * W_SCALE;
 	dst.h = 64 * 1.25;
 
-	tex = SDL_CreateTextureFromSurface(SDLX_DisplayGet()->renderer, IMG_Load("Assets/Button_SpriteSheet.png"));
+	tex = SDL_CreateTextureFromSurface(SDLX_DisplayGet()->renderer, IMG_Load("Assets/Button_sprite_sheet.png"));
 	anim = calloc(3, sizeof(SDLX_Anim));
 	anim[2] = SDLX_AnimLoadHorizontal(tex, 2, 64, 64, SDL_FALSE, 64 * 8, 0);
 	anim[0] = SDLX_AnimLoadHorizontal(tex, 1, 64, 64, SDL_TRUE, 0, 0);

@@ -98,7 +98,7 @@ void	SDLX_RenderQueueDisplay(SDLX_RenderQueue *queue, SDLX_Display *display)
 	{
 		// SDL_Log("Sprite %d %p  %p   %p  %f  %p   %d",
 		// i,
-		// queue->sprites[i].spriteSheet,
+		// queue->sprites[i].sprite_sheet,
 		// &queue->sprites[i].src,
 		// queue->sprites[i].dstptr,
 		// queue->sprites[i].angle,
@@ -127,7 +127,7 @@ void	SDLX_RenderQueueDisplay(SDLX_RenderQueue *queue, SDLX_Display *display)
 		// 	queue->sprites[i].dstptr->h
 		// 	);
 		SDL_RenderCopyEx(display->renderer,
-						queue->sprites[i].spriteSheet,
+						queue->sprites[i].sprite_sheet,
 						queue->sprites[i].srcptr,
 						queue->sprites[i].dstptr,
 						queue->sprites[i].angle,

@@ -85,7 +85,7 @@ typedef struct SDLX_Sprite
 
 	SDL_RendererFlip	flip;
 	SDL_Point			center;
-	SDL_Texture			*spriteSheet;
+	SDL_Texture			*sprite_sheet;
 
 	struct SDLX_Animator *animator;
 
@@ -100,7 +100,7 @@ typedef struct SDLX_Anim
 
 	SDL_bool	loop;
 	SDL_Rect	*srcs;
-	SDL_Texture *spriteSheet;
+	SDL_Texture *sprite_sheet;
 }				SDLX_Anim;
 
 typedef struct SDLX_Animator

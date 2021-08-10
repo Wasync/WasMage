@@ -122,7 +122,7 @@ SDLX_Anim	*SDLX_AnimLoadVertical(SDL_Texture *tex, int cycle, int cell_w, int ce
 	i = 0;
 	x = x_off;
 	y = y_off;
-	anim->spriteSheet = tex;
+	anim->sprite_sheet = tex;
 	while (i < cycle)
 	{
 		anim->srcs[i].x = x;
@@ -155,7 +155,7 @@ SDLX_Anim	*SDLX_AnimLoadHorizontal(SDL_Texture *tex, int cycle, int cell_w, int 
 	i = 0;
 	x = x_off;
 	y = y_off;
-	anim->spriteSheet = tex;
+	anim->sprite_sheet = tex;
 	while (i < cycle)
 	{
 		anim->srcs[i].x = x;
@@ -201,7 +201,7 @@ void SDLX_AnimationUpdate(void)
 					animator->frameNo += 1 * (frame < animator->anims[state]->cycle - 1);
 				animator->spriteptr->srcptr = &animator->anims[state]->srcs[frame];
 
-				animator->spriteptr->spriteSheet = animator->anims[state]->spriteSheet;
+				animator->spriteptr->sprite_sheet = animator->anims[state]->sprite_sheet;
 
 				SDLX_RenderQueueAdd(0, *animator->spriteptr);
 				if (meta->stateLock == frame)

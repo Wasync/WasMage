@@ -38,7 +38,7 @@ void SDLX_SpriteCreate(SDLX_Sprite *spriteDst, SDL_Texture *tex, SDL_Rect *src, 
 	spriteDst->dstptr = &spriteDst->dst;
 	spriteDst->srcptr = &spriteDst->src;
 	if (tex)
-		spriteDst->spriteSheet = tex;
+		spriteDst->sprite_sheet = tex;
 
 }
 
