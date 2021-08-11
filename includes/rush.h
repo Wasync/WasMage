@@ -71,8 +71,8 @@ void main_menu(void *args);
 void main_level(void *arg);
 void test_level(void *args);
 
-void DrawShape(void);
-int GetShape(void);
+void DrawSpell(void);
+int GetSpell(void);
 void CastSpell(int id);
 
 void renderSprites(void);

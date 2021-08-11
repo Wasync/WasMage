@@ -1,11 +1,5 @@
 #include "rush.h"
 
-int NoSpellFn(Spell *spell)
-{
-	(void)spell;
-	return 0;
-}
-
 int Fireball(Spell *spell)
 {
 	if (spell->duration > 4)

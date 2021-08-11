@@ -1,37 +1,5 @@
 #include "rush.h"
 
-int MenuHover(SDLX_GUIElem *elem)
-{
-	SDLX_Animator_StateSet(elem->sprite.animator, 1, SDLX_NONE);
-	return 0;
-}
-
-int StartClick(SDLX_GUIElem *elem)
-{
-	SDLX_Animator_StateSet(elem->sprite.animator, 2, SDLX_NONE);
-	SDLX_LevelManagerSwitch(1, NULL);
-	SDL_Log("HIT start\n");
-
-	return 0;
-}
-
-int TestClick(SDLX_GUIElem *elem)
-{
-	SDLX_Animator_StateSet(elem->sprite.animator, 2, SDLX_NONE);
-	SDLX_LevelManagerSwitch(1, NULL);
-	SDL_Log("HIT start\n");
-	return 0;
-}
-
-int ExitClick(SDLX_GUIElem *elem)
-{
-	SDLX_Animator_StateSet(elem->sprite.animator, 2, SDLX_NONE);
-	SDLX_LevelManagerSwitch(0, NULL);
-	SDL_Log("HIT exit\n");
-
-	return 0;
-}
-
 int isHoverDraw(SDLX_GUIElem *elem)
 {
 	SDLX_Input input;
@@ -62,11 +30,6 @@ int DrawButtonHover(SDLX_GUIElem *elem)
 		if(lvlData->norder != 0)
 		{
 			lvlData->order[lvlData->norder - 1]->sprite.dst.w += 4;
-			// lvlData->order[lvlData->norder - 1]->sprite.angle = MT_ToDegf(
-			// 	atan2(-(lvlData->order[lvlData->norder - 1]->sprite.dst.y
-			// 			- elem->sprite.dst.y),
-			// 		-(lvlData->order[lvlData->norder - 1]->sprite.dst.x
-			// 			- elem->sprite.dst.x)));
 		}
 		// Fix by changing w toditance between them
 		// to be correct but can't be done without extra sqrt

@@ -11,7 +11,7 @@ Add cooldown to spell
 			2 -> launching;
 	If state != 0, can't cast
 
-Refactor -> File hierarchy needs to be more clear. Separate levels, Spells, etc
+Move Spell initialization to its own file , seprate form main level init (may need them for practice range or somethif og the likes)
 
 Spell need additional struct to make copying more clean (copy spell info struct so active can keep its animator & sprite)
 
