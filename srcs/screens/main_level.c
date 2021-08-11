@@ -4,12 +4,10 @@ static MainLevel mainlvl;
 
 void main_levelInit(void *arg)
 {
-	SDLX_Animator *animator;
-	SDLX_Sprite sprite;
-	SDLX_Anim	**anim;
-	SDLX_Anim	**beam;
+	SDLX_Anim	**a_beam;
 
-	SDL_Texture *tex;
+	SDL_Texture *t_beam;
+	SDL_Texture *t_scroll;
 	SDL_Rect scroll;
 	SDL_Rect beamrect;
 	SDL_Rect dst;
@@ -18,45 +16,23 @@ void main_levelInit(void *arg)
 	int i;
 
 	ctx = getCtx();
+	initSpells();
 
-	tex = SDLX_LoadTexture("Assets/Spells/DrawBeam.png", SDLX_DisplayGet());
-	beam = calloc(1, sizeof(SDLX_Anim));
-	beam[0] = SDLX_AnimLoadVertical(tex, 8, 128, 16, SDL_TRUE, 0, 0);
+	t_beam = SDLX_LoadTexture("Assets/Spells/DrawBeam.png", SDLX_DisplayGet());
+	t_scroll = SDLX_LoadTexture("Assets/scroll.png", SDLX_DisplayGet());
 
-	tex = SDLX_LoadTexture("Assets/scroll.png", SDLX_DisplayGet());
+	a_beam = calloc(1, sizeof(SDLX_Anim));
+	a_beam[0] = SDLX_AnimLoadVertical(t_beam, 8, 128, 16, SDL_TRUE, 0, 0);
+
 	scroll.h = 128 * 2.25;
 	scroll.w = 64 *2.25;
 	scroll.x = WIN_W - scroll.w - 10;
 	scroll.y = WIN_H - scroll.h ;
 
-	SDLX_SpriteCreate(&ctx->sprites[0] , tex, NULL, &scroll);
+	SDLX_SpriteCreate(&ctx->sprites[0] , t_scroll, NULL, &scroll);
 
 	ctx->sprites[0].srcptr = NULL;
 	ctx->nsprites++;
-
-
-	anim = calloc(1, sizeof(SDLX_Anim));
-	tex = SDLX_LoadTexture("Assets/Spells/Fireball.png", SDLX_DisplayGet());
-
-	i = 0;
-	dst.h = 128;
-	dst.w = 128;
-	dst.x = STARTX;
-	dst.y = STARTY;
-	while (i < 10)
-	{
-		// ctx->active[i] = NoSpell;
-		SDLX_SpriteCreate(&ctx->active[i].sprite, NULL, NULL, &dst);
-		SDLX_AnimatorCreate(NULL, NULL, 0, NULL, &ctx->active[i].sprite)->active = SDLX_FALSE;
-		i++;
-	}
-	anim[0] = SDLX_AnimLoadHorizontal(tex, 11, 64, 64, SDLX_FALSE, 0, 0);
-	SDLX_SpriteCreate(&ctx->spells[0].sprite, tex, NULL, &dst);
-	SDLX_AnimatorCreate(NULL, anim, 1, NULL, &ctx->spells[0].sprite)->active = SDLX_FALSE;
-	ctx->spells[0].id = 20616;
-	ctx->spells[0].func = &Fireball;
-	ctx->spells[0].duration = 11;
-	ctx->current = &NoSpell;
 
 	dst.h = 10;
 	dst.w = 0;
@@ -79,68 +55,68 @@ void main_levelInit(void *arg)
 
 	dst.x = scroll.x + 73;
 	dst.y = scroll.y + 60;
-	SDLX_AnimatorCreate(NULL, beam, 1, &dst, &ctx->buttons[2]->sprite);
+	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[2]->sprite);
 
 /// TOP ROW
 
 	dst.x = scroll.x + 37;
 	dst.y = scroll.y + 93;
-	SDLX_AnimatorCreate(NULL, beam, 1, &dst, &ctx->buttons[3]->sprite);
+	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[3]->sprite);
 
 	dst.x = scroll.x + 60;
 	dst.y = scroll.y + 93;
-	SDLX_AnimatorCreate(NULL, beam, 1, &dst, &ctx->buttons[4]->sprite);
+	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[4]->sprite);
 
 	dst.x = scroll.x + 85;
 	dst.y = scroll.y + 93;
-	SDLX_AnimatorCreate(NULL, beam, 1, &dst, &ctx->buttons[5]->sprite);
+	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[5]->sprite);
 
 	dst.x = scroll.x + 109;
 	dst.y = scroll.y + 93;
-	SDLX_AnimatorCreate(NULL, beam, 1, &dst, &ctx->buttons[6]->sprite);
+	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[6]->sprite);
 
 ///MIDDLE ROW
 
 	dst.x = scroll.x + 50;
 	dst.y = scroll.y + 128;
-	SDLX_AnimatorCreate(NULL, beam, 1, &dst, &ctx->buttons[7]->sprite);
+	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[7]->sprite);
 
 	ctx->buttons[7]->autotrigger = SDLX_TRUE;
 
 	dst.x = scroll.x + 73;
 	dst.y = scroll.y + 128;
-	SDLX_AnimatorCreate(NULL, beam, 1, &dst, &ctx->buttons[8]->sprite);
+	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[8]->sprite);
 
 
 	dst.x = scroll.x + 95;
 	dst.y = scroll.y + 128;
-	SDLX_AnimatorCreate(NULL, beam, 1, &dst, &ctx->buttons[9]->sprite);
+	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[9]->sprite);
 
 /// BOTTOM ROW
 
 	dst.x = scroll.x + 37;
 	dst.y = scroll.y + 160;
-	SDLX_AnimatorCreate(NULL, beam, 1, &dst, &ctx->buttons[10]->sprite);
+	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[10]->sprite);
 
 	dst.x = scroll.x + 60;
 	dst.y = scroll.y + 160;
-	SDLX_AnimatorCreate(NULL, beam, 1, &dst, &ctx->buttons[11]->sprite);
+	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[11]->sprite);
 
 
 	dst.x = scroll.x + 85;
 	dst.y = scroll.y + 160;
-	SDLX_AnimatorCreate(NULL, beam, 1, &dst, &ctx->buttons[12]->sprite);
+	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[12]->sprite);
 
 
 	dst.x = scroll.x + 100;
 	dst.y = scroll.y + 160;
-	SDLX_AnimatorCreate(NULL, beam, 1, &dst, &ctx->buttons[13]->sprite);
+	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[13]->sprite);
 
 
 //BOTTOM MOST POINT
 	dst.x = scroll.x + 73;
 	dst.y = scroll.y + 195;
-	SDLX_AnimatorCreate(NULL, beam, 1, &dst, &ctx->buttons[14]->sprite);
+	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[14]->sprite);
 
 ///////////////////////////////////////
 	ctx->buttons[2]->sprite.center = (SDL_Point){0, dst.h / 2};
@@ -232,29 +208,17 @@ void main_level(void *arg)
 
 	while(i < 1)
 	{
-		if (ctx->active[i].id && !ctx->active[i].func(&ctx->active[i]))
+		if (ctx->active[i].info.id && !ctx->active[i].info.func(&ctx->active[i]))
 		{
-			ctx->active[i].id = 0;
+			ctx->active[i].info.id = 0;
 			ctx->active[i].sprite.animator->active = SDLX_FALSE;
 			ctx->active[i].sprite.dst.x = STARTX - 64;
 			ctx->active[i].sprite.dst.y = STARTY - 64;
-			SDL_Log("HERE %d %d", ctx->active[i].sprite.animator->active, ctx->spells[0].sprite.animator->active);
 		}
-		else if (ctx->active[i].id == 0  && ctx->current->id != 0 && input.mouse_click == SDL_MOUSEBUTTONDOWN)
+		else if (ctx->active[i].info.id == 0  && ctx->current->info.id != 0 && input.mouse_click == SDL_MOUSEBUTTONDOWN)
 		{
-
-			ctx->active[i].id = ctx->current->id;
-			ctx->active[i].cd = ctx->current->cd;
-			ctx->active[i].cost = ctx->current->cost;
-			ctx->active[i].func = ctx->current->func;
-			ctx->active[i].duration = ctx->current->duration;
-
-			SDL_Log("Current %p, active %p", ctx->current->sprite.dstptr, ctx->active[i].sprite.dstptr);
+			CopySpell(ctx->current, &ctx->active[i]);
 			ctx->active[i].sprite.animator->active = SDLX_TRUE;
-			ctx->active[i].sprite.animator->anims = ctx->current->sprite.animator->anims;
-			ctx->active[i].sprite.animator->amount = ctx->current->sprite.animator->amount;
-			ctx->active[i].sprite.animator->frameNo =  0;
-			ctx->active[i].sprite.src = ctx->current->sprite.src;
 			ctx->active[i].step.x = (ctx->active[i].sprite.dst.x - (input.mouse.x - 64)) / 7;
 			ctx->active[i].step.y = (ctx->active[i].sprite.dst.y - (input.mouse.y - 64)) / 7;
 		}
@@ -264,9 +228,7 @@ void main_level(void *arg)
 	{
 		DrawSpell();
 		if (input.mouse_click == SDL_MOUSEBUTTONUP)
-		{
 			CastSpell(GetSpell());
-		}
 	}
 	renderSprites();
 }

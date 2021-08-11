@@ -42,6 +42,7 @@ SCREEN_NAMES =			\
 
 SPELL_NAMES =			\
 	fireball			\
+	spells_init			\
 	spells_utils		\
 
 SRCS_NAMES =									\

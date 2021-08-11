@@ -10,18 +10,23 @@
 
 typedef int (*SpellFn)();
 
-typedef struct Spell
+typedef struct  SpellInfo
 {
 	int id;
 	int cd;
 	int cost;
 	int duration;
+	SpellFn func;
+
+}				SpellInfo;
+
+typedef struct Spell
+{
+	SpellInfo info;
 
 	SDL_Point	step;
-	SDL_Texture *spellPage;
 	SDLX_Sprite sprite;
-
-	SpellFn func;
+	SDL_Texture *spellPage;
 }			Spell;
 
 typedef struct Context
@@ -74,9 +79,11 @@ void test_level(void *args);
 void DrawSpell(void);
 int GetSpell(void);
 void CastSpell(int id);
+void CopySpell(Spell *src, Spell *dst);
 
 void renderSprites(void);
 
+int initSpells();
 int Fireball(Spell *spell);
 int NoSpellFn(Spell *spell);
 

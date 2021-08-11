@@ -2,12 +2,12 @@
 
 int Fireball(Spell *spell)
 {
-	if (spell->duration > 4)
+	if (spell->info.duration > 4)
 	{
 		spell->sprite.dstptr->x -= spell->step.x;
 		spell->sprite.dstptr->y -= spell->step.y;
 	}
-	spell->duration--;
+	spell->info.duration--;
 
-	return (spell->duration != 0);
+	return (spell->info.duration != 0);
 }

@@ -4,16 +4,12 @@ Everything is using render queue 0
 Need to assign proper renderQueue - Potentially fix issue where renderqueue 1 doesn't work
 
 
-Add cooldown to spell
+Add cooldown to spell !!!!!!!!!!!! NEED ANIMATION FIRST !!!!!!!!!!!!!!!!!!!
 	Potentially keep ref to parent & decrease cd || Set recharge anim state & wait until anim done
 	State : 0 -> Ready
 			1 -> Charging
 			2 -> launching;
 	If state != 0, can't cast
-
-Move Spell initialization to its own file , seprate form main level init (may need them for practice range or somethif og the likes)
-
-Spell need additional struct to make copying more clean (copy spell info struct so active can keep its animator & sprite)
 
 ------------- Assets ----------------------
 

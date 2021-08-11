@@ -18,7 +18,7 @@ void CastSpell(int id)
 
 	while (i < 20)
 	{
-		if (ctx->spells[i].id == id)
+		if (ctx->spells[i].info.id == id)
 		{
 			ctx->current = &ctx->spells[i];
 			break ;
@@ -78,4 +78,12 @@ void DrawSpell(void)
 		sprite->dst.w = 200;
 
 	SDL_SetRenderDrawColor(display->renderer, 0, 0, 0, 255);
+}
+
+void CopySpell(Spell *src, Spell *dst)
+{
+	dst->info = src->info;
+	dst->sprite.animator->anims = src->sprite.animator->anims;
+	dst->sprite.animator->amount = src->sprite.animator->amount;
+	dst->sprite.animator->frameNo = 0;
 }
