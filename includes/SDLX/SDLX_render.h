@@ -1,8 +1,6 @@
 #ifndef SDLX_RENDER_H
 # define SDLX_RENDER_H
 
-
-
 #include "SDLX/SDLX_structs.h"
 
 void			SDLX_RenderQueueAdd(int queue, SDLX_Sprite sprite);

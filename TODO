@@ -1,14 +1,52 @@
+!!!!!!!!!!! IMPORTANT !!!!!!!!!!!!!!
+
+Everything is using render queue 0
+Need to assign proper renderQueue - Potentially fix issue where renderqueue 1 doesn't work
+
+
+Add cooldown to spell !!!!!!!!!!!! NEED ANIMATION FIRST !!!!!!!!!!!!!!!!!!!
+	Potentially keep ref to parent & decrease cd || Set recharge anim state & wait until anim done
+	State : 0 -> Ready
+			1 -> Charging
+			2 -> launching;
+	If state != 0, can't cast
+
+------------- Assets ----------------------
+
+General: numbers 0 - 9 {ttf doesnt work on web}, return to menu
+Prewritten messages: Not enough Mana, Start, SpellBook, Credit, Shop
+Main menu : Buttons, background, potentially particle effect later
+Start menu : Background, start button
+Pause: Pause button, pause overlay
+Other : Return to menu, spellbook button
+
+Mage hand idle
+Spells :charging, idle, cast, effect (if any)
+Barrier
+Death screen
 
 -------------- CORE_GAMEPLAY --------------
-- Fix the angle in the drawing matrix
-- Find the correct spell based on ID
-- Set the spell as active
-- Cast from hand to target in correct amount of time
 - Mana substracted & regeneration
 - Enemy walk towards crysal
 - Enemy collision
 - Enemy attack
 - Spellbook menu
+- Pause Menu
+
+
+------------ Spells ----------------
+- Fireball
+- Ice Spike
+- Lightning bolt
+
+
+------------ Spell upgrade -----------
+- Fireball
+	- Permanent:
+	- Runwise
+
+
+
 
 -------------- Main Menu ----------------
 - Spellbook
@@ -26,4 +64,20 @@
 
 ------------- SDLX -----------------------
 
-- Review and change relationship between srpites, animators and UI.
+---------- Asssets ---------------
+- Scroll
+- Fireball hands
+- Idle hands
+- Menu icons
+	- Spellbook
+	- Shop
+	- Continue
+	- Scores
+
+- Spell icons
+	- Fireball
+	- Ice ball
+	- Lightning
+
+
+Refactor

@@ -10,6 +10,6 @@ void	SDLX_GUIUpdate(void);
 void	SDLX_GUI_KeyMap(int up, int down, int left, int right, int select);
 void	SDLX_GUIElem_SetKbTarget(int isTarget,SDLX_GUIElem *target, SDLX_GUIElem *up, SDLX_GUIElem *down, SDLX_GUIElem *left, SDLX_GUIElem *right);
 void	SDLX_GUIElem_SetDefaultTarget(SDLX_GUIElem *defaultTarget);
-void 	SDLX_DefaultUIUpdate(SDLX_GUIElem *elem);
+int		SDLX_DefaultGUISelect(SDLX_GUIElem *elem);
 
 #endif

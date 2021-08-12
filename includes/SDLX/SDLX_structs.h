@@ -2,6 +2,7 @@
 #define SDLX_structs_H
 
 # include "../SDL2/SDL.h"
+# include "SDLX_config.h"
 
 # ifndef MAX
 #  define MAX(a, b)\
@@ -38,6 +39,36 @@ enum SDLX_GUIType
 	SDLX_PANEL
 };
 
+typedef enum SDLX_Keys
+{
+	SDLX_UP = 1,
+	SDLX_DOWN,
+	SDLX_LEFT,
+	SDLX_RIGHT,
+	SDLX_PAUSE
+}			SDLX_Keys;
+
+typedef enum SDLX_InputType
+{
+	SDLX_MOUSE = 0,
+	SDLX_KEYBOARD,
+	SDLX_CONTROLLER,
+	SDLX_AXIS,
+	SDLX_GESTURE,
+	SDLX_KEYUP,
+	SDLX_KEYDOWN,
+	SDLX_KEYHELD
+}				SDLX_InputType;
+
+typedef struct	SDLX_Input
+{
+	int input[INPUT_AMOUNT]; // This is just assuming no more than 5 keys will be mapped but that is a terrible asusmption. This should be allocated
+	SDL_Point mouse;
+	SDL_Point mouse_delta;
+	int mouse_click;
+	int key_down;
+}				SDLX_Input;
+
 typedef struct SDLX_Display
 {
 	SDL_Window		*window;
@@ -49,11 +80,12 @@ typedef struct SDLX_Sprite
 {
 	SDL_Rect			dst;
 	SDL_Rect			src;
+	SDL_Rect			*srcptr;
 	SDL_Rect			*dstptr;
 
 	SDL_RendererFlip	flip;
 	SDL_Point			center;
-	SDL_Texture			*spriteSheet;
+	SDL_Texture			*sprite_sheet;
 
 	struct SDLX_Animator *animator;
 
@@ -68,7 +100,7 @@ typedef struct SDLX_Anim
 
 	SDL_bool	loop;
 	SDL_Rect	*srcs;
-	SDL_Texture *spriteSheet;
+	SDL_Texture *sprite_sheet;
 }				SDLX_Anim;
 
 typedef struct SDLX_Animator
@@ -106,7 +138,7 @@ typedef struct SDLX_GUIElem
 	SDLX_Sprite sprite;
 
 	void *data;
-	
+
 	int	 triggered;
 	int  autotrigger;
 	struct SDLX_GUIMeta *metadata;
@@ -116,6 +148,6 @@ typedef struct SDLX_GUIElem
 
 
 typedef void (* SDLX_LevelFunc)(void *);
-typedef void (* SDLX_UIFunc)(SDLX_GUIElem *);
+typedef int (* SDLX_UIFunc)(SDLX_GUIElem *);
 
 #endif

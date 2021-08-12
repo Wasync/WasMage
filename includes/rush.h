@@ -5,23 +5,60 @@
 # include "SDLX/SDLX.h"
 # include "buttons.h"
 
+# define STARTX 230
+# define STARTY 769
+
+typedef int (*SpellFn)();
+
+typedef struct  SpellInfo
+{
+	int id;
+	int cd;
+	int cost;
+	int duration;
+	SpellFn func;
+
+}				SpellInfo;
+
+typedef struct Spell
+{
+	SpellInfo info;
+
+	SDL_Point	step;
+	SDLX_Sprite sprite;
+	SDL_Texture *spellPage;
+}			Spell;
+
 typedef struct Context
 {
 	SDLX_GUIElem *buttons[100];
+	SDLX_Sprite  sprites[100];
+
+	Spell 		spells[20];
+	Spell		active[10];
+	Spell		*current;
 
 	void *lvl_data;
 	int nbuttons;
+	int nsprites;
+	int nspells;
 	int lvl;
 }			Context;
 
 typedef struct MainLevel
 {
-	SDLX_Animator *shape[9];
-	SDLX_GUIElem *order[9];
+	// SDLX_Animator *shape[13];
+	SDLX_GUIElem *order[13];
 	int norder;
 	int drawing;
-
 }				MainLevel;
+
+
+static int ctxTrue = SDLX_TRUE;
+static int ctxFalse = SDLX_FALSE;
+static Spell NoSpell;
+
+// Ref for scroll UI so no need to allocate
 
 
 Context *getCtx(void);
@@ -39,7 +76,16 @@ void main_menu(void *args);
 void main_level(void *arg);
 void test_level(void *args);
 
-void DrawShape(void);
-int GetShape(void);
+void DrawSpell(void);
+int GetSpell(void);
+void CastSpell(int id);
+void CopySpell(Spell *src, Spell *dst);
+
+void renderSprites(void);
+
+int initSpells();
+int Fireball(Spell *spell);
+int NoSpellFn(Spell *spell);
+
 
 #endif

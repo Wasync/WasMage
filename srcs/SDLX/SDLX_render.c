@@ -96,9 +96,39 @@ void	SDLX_RenderQueueDisplay(SDLX_RenderQueue *queue, SDLX_Display *display)
 	i = 0;
 	while (i < queue->amount)
 	{
+		// SDL_Log("Sprite %d %p  %p   %p  %f  %p   %d",
+		// i,
+		// queue->sprites[i].sprite_sheet,
+		// &queue->sprites[i].src,
+		// queue->sprites[i].dstptr,
+		// queue->sprites[i].angle,
+		// &queue->sprites[i].center,
+		// queue->sprites[i].flip
+		// );
+		// SDL_Log("Sprite DST (%d, %d) , w %d, h %d\n",
+		// 	queue->sprites[i].dst.x,
+		// 	queue->sprites[i].dst.y,
+		// 	queue->sprites[i].dst.w,
+		// 	queue->sprites[i].dst.h
+		// 	);
+		// SDL_Log("Sprite src (%d, %d) , w %d, h %d\n",
+		// 	queue->sprites[i].src.x,
+		// 	queue->sprites[i].src.y,
+		// 	queue->sprites[i].src.w,
+		// 	queue->sprites[i].src.h
+		// 	);
+		// SDL_Log("Sprite srcptr %p",
+		// 	queue->sprites[i].srcptr
+		// 	);
+		// SDL_Log("Sprite dstptr (%d, %d) , w %d, h %d\n",
+		// 	queue->sprites[i].dstptr->x,
+		// 	queue->sprites[i].dstptr->y,
+		// 	queue->sprites[i].dstptr->w,
+		// 	queue->sprites[i].dstptr->h
+		// 	);
 		SDL_RenderCopyEx(display->renderer,
-						queue->sprites[i].spriteSheet,
-						&queue->sprites[i].src,
+						queue->sprites[i].sprite_sheet,
+						queue->sprites[i].srcptr,
 						queue->sprites[i].dstptr,
 						queue->sprites[i].angle,
 						&queue->sprites[i].center,
@@ -192,7 +222,7 @@ void SDLX_RenderDrawCircle(SDL_Renderer *ren, SDLX_Circle circle)
 		SDL_RenderDrawPoint(ren, circle.x + y, circle.y + x);
 		SDL_RenderDrawPoint(ren, circle.x + x, circle.y - y);
 		SDL_RenderDrawPoint(ren, circle.x + y, circle.y - x);
-		
+
 		SDL_RenderDrawPoint(ren, circle.x - x, circle.y + y);
 		SDL_RenderDrawPoint(ren, circle.x - x, circle.y - y);
 		SDL_RenderDrawPoint(ren, circle.x - y, circle.y - x);

@@ -17,7 +17,7 @@ void			SDLX_Animator_StateSet(SDLX_Animator *anim,int newState, int awaitCurrent
 SDLX_Animator *SDLX_AnimatorCreate(SDLX_Animator *copy, SDLX_Anim **anims, int amount, SDL_Rect *dst, SDLX_Sprite *sprite);
 
 /**
- * @brief Loads an animation from a spritesheet.
+ * @brief Loads an animation from a sprite_sheet.
  * User should make their own function as this assues all frames of an animation are within the same row
  * @param cycle the number of frames in the animation
  * @param cell_w the width in pixels of a single frame
