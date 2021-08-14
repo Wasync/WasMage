@@ -5,6 +5,9 @@
 		"string": "c",
 		"chrono": "c",
 		"__node_handle": "c",
-		"__locale": "c"
+		"__locale": "c",
+		"array": "c",
+		"string_view": "c",
+		"vector": "c"
 	}
 }

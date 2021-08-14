@@ -21,8 +21,9 @@ int main(void)
 		# ifdef DEBUG
 			debug(ctx);
 		#endif
-		SDLX_RenderQueueDisplay(SDLX_RenderQueue_FetchAll(NULL)[0], display);
-		SDL_RenderPresent(SDLX_DisplayGet()->renderer);
+		// SDLX_RenderQueueDisplay(SDLX_RenderQueue_FetchAll(NULL)[0], display);
+		SDLX_Render_DisplayAll(display);
+		SDL_RenderPresent(display->renderer);
 		SDLX_FPSAdjust();
     }
 }

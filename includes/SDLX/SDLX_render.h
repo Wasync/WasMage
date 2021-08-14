@@ -11,5 +11,6 @@ SDLX_RenderQueue**SDLX_RenderQueue_FetchAll(int *amount);
 void			SDLX_RenderMessage(TTF_Font *font, char *msg, const SDL_Rect *src, const SDL_Rect *dst);
 void			SDLX_RenderQueueDisplay(SDLX_RenderQueue *queue, SDLX_Display *display);
 void			SDLX_ResetWindow(void);
+void 			SDLX_Render_DisplayAll(SDLX_Display *display);
 
 #endif

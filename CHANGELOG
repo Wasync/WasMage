@@ -24,3 +24,7 @@ now takes a sprite ptr.
 08/10/2021
 
 - Bind Cast spell to spell ID
+
+08/13/2021
+
+- GUI now uses linked list

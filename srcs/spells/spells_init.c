@@ -38,6 +38,7 @@ int initSpells()
 	s_Fireball.info.id = 20616;
 	s_Fireball.info.func = &Fireball;
 	s_Fireball.info.duration = 11;
+	s_Fireball.sprite.queue = 2;
 
 	ctx->spells[0] = s_Fireball;
 

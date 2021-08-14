@@ -136,6 +136,7 @@ typedef struct SDLX_Circle
 typedef struct SDLX_GUIElem
 {
 	SDLX_Sprite sprite;
+	SDLX_Sprite *spriteptr;
 
 	void *data;
 

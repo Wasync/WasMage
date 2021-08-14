@@ -33,13 +33,15 @@ typedef struct SDLX_GUIInfo
 {
 	SDLX_GUIElem elem;
 	SDLX_GUIMeta meta;
+
+	struct SDLX_GUIInfo *next;
 }				SDLX_GUIInfo;
 
 typedef struct GUI_intern
 {
-	SDLX_GUIInfo *GUI;
+	SDLX_GUIInfo *head;
+	SDLX_GUIInfo *tail;
 
-	size_t GUIMax;
 	size_t GUICount;
 }			GUI_intern;
 
@@ -59,8 +61,8 @@ void SDLX_ResetInput(int key);
 
 void SDLX_GUIInit(void)
 {
-	_intern.GUI = calloc(GUICT, sizeof(SDLX_GUIInfo));
-	_intern.GUIMax = GUICT;
+	_intern.head = calloc(GUICT, sizeof(SDLX_GUIInfo));
+	_intern.tail = _intern.head;
 	_intern.GUICount = 0;
 	defaultTarget = NULL;
 	currentTarget = NULL;
@@ -74,47 +76,45 @@ SDLX_GUIElem *SDLX_GUIElem_Create(SDLX_Sprite *sprite, const char *name,
 			SDLX_UIFunc OnSelectEnterFn,SDLX_UIFunc OnSelectExitFn,
 			SDLX_UIFunc OnSelectStayFn,	SDLX_UIFunc OnClickFn)
 {
-	size_t i;
+	SDLX_GUIInfo *node;
 
-	i = _intern.GUICount;
+	node =  calloc(1, sizeof(SDLX_GUIInfo));
 
-	if (i >= _intern.GUIMax)
-	{
-		_intern.GUIMax *= 2;
-		_intern.GUI = SDL_realloc(_intern.GUI, _intern.GUIMax * sizeof(SDLX_GUIInfo));
-	}
 	if (sprite)
 	{
-		_intern.GUI[i].elem.sprite = *sprite;
+		node->elem.spriteptr = sprite;
  	}
+	else
+		node->elem.spriteptr = &node->elem.sprite;
 
-	(_intern.GUI[i].elem.sprite.dstptr == NULL)
-		? (_intern.GUI[i].elem.sprite.dstptr = &_intern.GUI[i].elem.sprite.dst)
+	(node->elem.sprite.dstptr == NULL)
+		? (node->elem.sprite.dstptr = &node->elem.sprite.dst)
 		: (NULL);
-	_intern.GUI[i].elem.name = name;
-	_intern.GUI[i].elem.metadata = &_intern.GUI[i].meta;
-	_intern.GUI[i].elem.autotrigger = 	SDLX_TRUE;
+	node->elem.name = name;
+	node->elem.metadata = &node->meta;
+	node->elem.autotrigger = 	SDLX_TRUE;
 
-	_intern.GUI[i].meta.cd				= 10;
-	_intern.GUI[i].meta.type			= SDLX_BUTTON;
-	_intern.GUI[i].meta.active			= SDLX_FALSE;
-	_intern.GUI[i].meta.selectStatus	= SDLX_NONE;
+	node->meta.cd				= 10;
+	node->meta.type			= SDLX_BUTTON;
+	node->meta.active			= SDLX_FALSE;
+	node->meta.selectStatus	= SDLX_FALSE;
 
-	_intern.GUI[i].meta.isSelectFn 		= isSelectFn;
+	node->meta.isSelectFn 		= isSelectFn;
 
-	_intern.GUI[i].meta.UIFuncs[STARTSELECT]= OnSelectEnterFn;
-	_intern.GUI[i].meta.UIFuncs[STAY] 		= OnSelectStayFn;
-	_intern.GUI[i].meta.UIFuncs[ENDSELECT]	= OnSelectExitFn;
-	_intern.GUI[i].meta.UIFuncs[CLICKED]	= OnClickFn;
+	node->meta.UIFuncs[STARTSELECT]= OnSelectEnterFn;
+	node->meta.UIFuncs[STAY] 		= OnSelectStayFn;
+	node->meta.UIFuncs[ENDSELECT]	= OnSelectExitFn;
+	node->meta.UIFuncs[CLICKED]	= OnClickFn;
 
+	_intern.tail->next = node;
+	_intern.tail = node;
 	_intern.GUICount++;
-	return &(_intern.GUI[i].elem);
+	return &(node->elem);
 }
 
 void	SDLX_GUIElem_SetActive(SDLX_GUIElem *elem, int isActive)
 {
 	elem->metadata->active = isActive;
-	SDL_Log("Button %p %p", elem, elem->sprite.animator);
 	if (elem->sprite.animator)
 	{
 		elem->sprite.animator->active = isActive;
@@ -165,7 +165,8 @@ int _MouseUpdate(SDLX_GUIElem *elem)
 	input = SDLX_InputGet();
 	elem->triggered = 0;
 	select = elem->metadata->selectStatus;
-	mouseHover = SDLX_MouseInRect(input.mouse.x, input.mouse.y, *elem->sprite.dstptr);
+	mouseHover = SDLX_MouseInRect(input.mouse.x, input.mouse.y, *elem->spriteptr->dstptr);
+
 	if (!mouseHover && currentTarget == elem)
 	{
 		select = SDLX_FALSE;
@@ -226,7 +227,6 @@ int SDLX_DefaultGUISelect(SDLX_GUIElem *elem)
 		select = _MouseUpdate(elem);
 	if (selector == 0)
 		select = _KBUpdate(elem);
-
 	return select;
 }
 
@@ -236,17 +236,20 @@ int		_GetSelector(void)
 
 	int			newselector;
 	int			oldselector;
+	SDLX_GUIInfo *node;
 
 	input = SDLX_InputGet();
 	oldselector = (selector << 1) & 2;
 	newselector = 0;
-	for (int i = 0; i < _intern.GUICount; i++)
+	node = _intern.head->next;
+	while(node)
 	{
-		if (_intern.GUI[i].meta.isSelectFn(&_intern.GUI[i].elem))
+		if (SDL_PointInRect(&input.mouse, node->elem.spriteptr->dstptr))
 		{
 			newselector = 1;
 			break ;
 		}
+		node = node->next;
 	}
 
 	for (int i = 0; i < 4; i++)
@@ -266,8 +269,8 @@ int		_GetSelector(void)
 
 void SDLX_GUIUpdate(void)
 {
-	int i;
 	SDLX_GUIMeta *meta;
+	SDLX_GUIInfo *node;
 	SDLX_Input 	input;
 	int mouseHover;
 	int select;
@@ -275,32 +278,37 @@ void SDLX_GUIUpdate(void)
 
 
 	_GetSelector();
-	i = 0;
-
-	while (i < _intern.GUICount)
+	node = _intern.head->next;
+	while (node)
 	{
-		meta = &_intern.GUI[i].meta;
+		meta = &node->meta;
 		if (meta->active)
 		{
-			select =  meta->isSelectFn(&_intern.GUI[i].elem);
+			select =  meta->isSelectFn(&node->elem);
 			oldSelect = meta->selectStatus;
 
 			if (select == SDLX_TRUE && oldSelect == SDLX_FALSE)
-				meta->UIFuncs[STARTSELECT](&_intern.GUI[i].elem);
+			{
+				meta->UIFuncs[STARTSELECT](&node->elem);
+			}
 			else if (select == SDLX_TRUE && oldSelect == SDLX_TRUE)
-				meta->UIFuncs[STAY](&_intern.GUI[i].elem);
+			{
+				meta->UIFuncs[STAY](&node->elem);
+			}
 			else if (select == SDLX_FALSE && oldSelect == SDLX_TRUE)
-				meta->UIFuncs[ENDSELECT](&_intern.GUI[i].elem);
+			{
+				meta->UIFuncs[ENDSELECT](&node->elem);
+			}
 			// SDL_Log("FUNC");
 			meta->selectStatus = select;
-			if (select != SDLX_FALSE && _intern.GUI[i].elem.triggered)
+			if (select != SDLX_FALSE && node->elem.triggered)
 			{
-				SDL_Log("Triggered %s\n", _intern.GUI[i].elem.name);
-				meta->UIFuncs[CLICKED](&_intern.GUI[i].elem);
+				SDL_Log("Triggered %s\n", node->elem.name);
+				meta->UIFuncs[CLICKED](&node->elem);
 			}
-			// if (&_intern.GUI[i]->autotrigger) Maybe?
-			_intern.GUI[i].elem.triggered = SDLX_FALSE;
+			// if (&node->>autotrigger) Maybe?
+			node->elem.triggered = SDLX_FALSE;
 		}
-			i++;
+		node= node->next;
 	}
 }

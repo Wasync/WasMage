@@ -1,46 +1,106 @@
 # include "rush.h"
 
+static int cursor;
+
 void main_menuInit(void *arg)
 {
 	SDLX_Animator *animator;
 	SDLX_Anim	**anim;
 
-	SDL_Texture *tex;	SDL_Rect dst;
+	SDL_Texture *button_tx;
+	SDL_Rect dst;
+	SDL_Rect src;
+	SDL_Rect text_src;
 
 	Context *ctx;
 
+
 	ctx = getCtx();
-	dst.x = WIN_W / 2 - (32 * W_SCALE);
-	dst.y = WIN_W / 2 - (64 * H_SCALE);
-	dst.w = 64 * W_SCALE;
-	dst.h = 64 * 1.25;
+	ctx->nsprites = 0;
 
-	ctx->buttons[0] = SDLX_GUIElem_Create(NULL, "Start", &SDLX_DefaultGUISelect, &MenuHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &StartClick);
-	ctx->buttons[1] = SDLX_GUIElem_Create(NULL, "Exit", &SDLX_DefaultGUISelect, &MenuHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &ExitClick);
-	tex = SDLX_LoadTexture("Assets/UI/MainMenu.png", SDLX_DisplayGet());
 
-	anim = calloc(3, sizeof(SDLX_Anim));
-	anim[2] = SDLX_AnimLoadHorizontal(tex, 2, 64, 64, SDL_FALSE, 64 * 8, 0);
-	anim[0] = SDLX_AnimLoadHorizontal(tex, 1, 64, 64, SDL_TRUE, 0, 0);
-	anim[1] = SDLX_AnimLoadHorizontal(tex, 8, 64, 64, SDL_FALSE, 64, 0);
-	animator = SDLX_AnimatorCreate(NULL, anim, 3, &dst, &ctx->buttons[0]->sprite);
+	button_tx = SDLX_LoadTexture("Assets/UI/MainMenu.png", SDLX_DisplayGet());
 
-	dst.x = WIN_W / 2 - (32 * W_SCALE);
-	dst.y = WIN_W - 80;
-	anim = calloc(3, sizeof(SDLX_Anim));
-	anim[2] = SDLX_AnimLoadHorizontal(tex, 2, 64, 64, SDL_FALSE, 64 * 8, 64);
-	anim[0] = SDLX_AnimLoadHorizontal(tex, 1, 64, 64, SDL_TRUE, 0, 64);
-	anim[1] = SDLX_AnimLoadHorizontal(tex, 8, 64, 64, SDL_FALSE, 64, 64);
-	animator = SDLX_AnimatorCreate(NULL, anim, 3, &dst, &ctx->buttons[1]->sprite);
+	dst.x = WIN_W / 2 - (98  * W_SCALE);
+	dst.y = WIN_W / 2 - (32  * H_SCALE);
+	dst.w = 98 * 2 * W_SCALE;
+	dst.h = 32 * 2 * 1.25;
 
-	ctx->buttons[0]->autotrigger = SDLX_TRUE;
-	ctx->buttons[0]->triggered = SDLX_FALSE;
+	src.h = 32;
+	src.w = 98;
+	src.x = 0;
+	src.y = 0;
+	SDLX_SpriteCreate(&ctx->sprites[ctx->nsprites], button_tx, &src, &dst);
+	ctx->buttons[0] = SDLX_GUIElem_Create(&ctx->sprites[ctx->nsprites], "Start", &SDLX_DefaultGUISelect, &MenuEnterHover,  &MenuExitHover, &SDLX_NullGUIFunc, &StartClick);
+	ctx->nsprites++;
+
+
+	dst.y += 98 * 2;
+	SDLX_SpriteCreate(&ctx->sprites[ctx->nsprites], button_tx, &src, &dst);
+	ctx->buttons[1] = SDLX_GUIElem_Create(&ctx->sprites[ctx->nsprites], "Spells", &SDLX_DefaultGUISelect, &MenuEnterHover,  &MenuExitHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc);
+	ctx->nsprites++;
+
+	dst.y = WIN_H - dst.h - 32;
+	dst.x = WIN_W - dst.w - 32;
+	SDLX_SpriteCreate(&ctx->sprites[ctx->nsprites], button_tx, &src, &dst);
+	ctx->buttons[2] = SDLX_GUIElem_Create(&ctx->sprites[ctx->nsprites], "Credits", &SDLX_DefaultGUISelect, &MenuEnterHover,  &MenuExitHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc);
+	ctx->nsprites++;
+
+
+	src.y += src.h;
+	src.h = 48;
+	src.w = 48;
+	dst.w = 0;
+	dst.h = 64;
+	SDLX_SpriteCreate(&ctx->sprites[ctx->nsprites], button_tx, &src, &dst);
+	cursor = ctx->nsprites;
+	ctx->nsprites++;
+
+	src.x = 48 * 2;
+	src.w = 32;
+	src.h = 16;
+	dst.w = 124;
+	dst.h = 64;
+	dst.x = WIN_W / 2 - (98  * W_SCALE) + 64;
+	dst.y = WIN_W / 2 - (64  * H_SCALE);
+	SDLX_SpriteCreate(&ctx->sprites[ctx->nsprites], button_tx, &src, &dst);
+	ctx->nsprites++;
+
+	src.x -= 48;
+	src.w = 48;
+	dst.w = 150;
+	dst.x = WIN_W / 2 - (98  * W_SCALE) + 48;
+	dst.y += 98 * 2;
+	SDLX_SpriteCreate(&ctx->sprites[ctx->nsprites], button_tx, &src, &dst);
+	ctx->nsprites++;
+
+	src.y += 16;
+	src.w = 56;
+	dst.y = WIN_H - dst.h - 98;
+	dst.x = WIN_W - dst.w - 64;
+	SDLX_SpriteCreate(&ctx->sprites[ctx->nsprites], button_tx, &src, &dst);
+	ctx->nsprites++;
+
+	// SDLX_SpriteCreate(&ctx->sprites[ctx->nsprites], tex, &src, &dst);
+	// ctx->buttons[0]->autotrigger = SDLX_TRUE;
+	// ctx->buttons[0]->triggered = SDLX_FALSE;
+
+	ctx->buttons[0]->data = &cursor;
+	ctx->buttons[1]->data = &cursor;
+	ctx->buttons[2]->data = &cursor;
 
 	SDLX_GUIElem_SetActive(ctx->buttons[0], SDLX_TRUE);
 	SDLX_GUIElem_SetActive(ctx->buttons[1], SDLX_TRUE);
+	SDLX_GUIElem_SetActive(ctx->buttons[2], SDLX_TRUE);
+	SDLX_GUIElem_SetDefaultTarget(ctx->buttons[0]);
 	// SDLX_GUIElem_SetKbTarget(SDLX_FALSE, ctx->buttons[0], NULL, NULL, NULL, NULL);
-	// SDLX_GUIElem_SetDefaultTarget(ctx->buttons[0]);
 	SDL_Log("MainMenu Init \n");
+}
+
+void main_menu(void *arg)
+{
+	(void)arg;
+	renderSprites();
 }
 
 void main_menuCleanup(void *arg)
@@ -48,6 +108,8 @@ void main_menuCleanup(void *arg)
 	Context *ctx;
 
 	ctx = getCtx();
-	SDL_Log("Cleanup main menu\n");
 	SDLX_GUIElem_SetActive(ctx->buttons[0], SDLX_FALSE);
+	SDLX_GUIElem_SetActive(ctx->buttons[1], SDLX_FALSE);
+	SDLX_GUIElem_SetActive(ctx->buttons[2], SDLX_FALSE);
+	SDL_Log("Cleanup main menu\n");
 }

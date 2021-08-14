@@ -2,6 +2,7 @@
 
 static MainLevel mainlvl;
 
+
 void main_levelInit(void *arg)
 {
 	SDLX_Anim	**a_beam;
@@ -17,7 +18,7 @@ void main_levelInit(void *arg)
 
 	ctx = getCtx();
 	initSpells();
-
+	ctx->nsprites = 0;
 	t_beam = SDLX_LoadTexture("Assets/Spells/DrawBeam.png", SDLX_DisplayGet());
 	t_scroll = SDLX_LoadTexture("Assets/scroll.png", SDLX_DisplayGet());
 
@@ -31,99 +32,103 @@ void main_levelInit(void *arg)
 
 	SDLX_SpriteCreate(&ctx->sprites[0] , t_scroll, NULL, &scroll);
 
+	ctx->sprites[0].queue = 4;
 	ctx->sprites[0].srcptr = NULL;
 	ctx->nsprites++;
 
 	dst.h = 10;
 	dst.w = 0;
 
-	ctx->buttons[ 2] = SDLX_GUIElem_Create(NULL, "0" , &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
-	ctx->buttons[ 3] = SDLX_GUIElem_Create(NULL, "1" , &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
-	ctx->buttons[ 4] = SDLX_GUIElem_Create(NULL, "2" , &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
-	ctx->buttons[ 5] = SDLX_GUIElem_Create(NULL, "3" , &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
-	ctx->buttons[ 6] = SDLX_GUIElem_Create(NULL, "4" , &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
-	ctx->buttons[ 7] = SDLX_GUIElem_Create(NULL, "5" , &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
-	ctx->buttons[ 8] = SDLX_GUIElem_Create(NULL, "6" , &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
-	ctx->buttons[ 9] = SDLX_GUIElem_Create(NULL, "7" , &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
-	ctx->buttons[10] = SDLX_GUIElem_Create(NULL, "8" , &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
-	ctx->buttons[11] = SDLX_GUIElem_Create(NULL, "9" , &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
-	ctx->buttons[12] = SDLX_GUIElem_Create(NULL, "10", &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
-	ctx->buttons[13] = SDLX_GUIElem_Create(NULL, "11", &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
-	ctx->buttons[14] = SDLX_GUIElem_Create(NULL, "12", &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
+	SDL_Log("Creating buttons\n");
+	ctx->buttons[ 3] = SDLX_GUIElem_Create(NULL, "0" , &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
+	ctx->buttons[ 4] = SDLX_GUIElem_Create(NULL, "1" , &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
+	ctx->buttons[ 5] = SDLX_GUIElem_Create(NULL, "2" , &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
+	ctx->buttons[ 6] = SDLX_GUIElem_Create(NULL, "3" , &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
+	ctx->buttons[ 7] = SDLX_GUIElem_Create(NULL, "4" , &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
+	ctx->buttons[ 8] = SDLX_GUIElem_Create(NULL, "5" , &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
+	ctx->buttons[ 9] = SDLX_GUIElem_Create(NULL, "6" , &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
+	ctx->buttons[10] = SDLX_GUIElem_Create(NULL, "7" , &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
+	ctx->buttons[11] = SDLX_GUIElem_Create(NULL, "8" , &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
+	ctx->buttons[12] = SDLX_GUIElem_Create(NULL, "9" , &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
+	ctx->buttons[13] = SDLX_GUIElem_Create(NULL, "10", &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
+	ctx->buttons[14] = SDLX_GUIElem_Create(NULL, "11", &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
+	ctx->buttons[15] = SDLX_GUIElem_Create(NULL, "12", &isHoverDraw, &DrawButtonHover, &SDLX_NullGUIFunc, &SDLX_NullGUIFunc, &DrawButtonTrigger);
 
 //// TOP POINT
 
+	SDL_Log("Setting buttons\n");
 	dst.x = scroll.x + 73;
 	dst.y = scroll.y + 60;
-	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[2]->sprite);
+	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[3]->sprite);
+	SDL_Log("Setting buttons1\n");
 
 /// TOP ROW
 
 	dst.x = scroll.x + 37;
 	dst.y = scroll.y + 93;
-	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[3]->sprite);
+	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[4]->sprite);
+	SDL_Log("Setting buttons2\n");
 
 	dst.x = scroll.x + 60;
 	dst.y = scroll.y + 93;
-	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[4]->sprite);
+	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[5]->sprite);
+	SDL_Log("Setting buttons3\n");
 
 	dst.x = scroll.x + 85;
 	dst.y = scroll.y + 93;
-	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[5]->sprite);
+	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[6]->sprite);
 
 	dst.x = scroll.x + 109;
 	dst.y = scroll.y + 93;
-	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[6]->sprite);
+	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[7]->sprite);
 
 ///MIDDLE ROW
 
 	dst.x = scroll.x + 50;
 	dst.y = scroll.y + 128;
-	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[7]->sprite);
+	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[8]->sprite);
 
 	ctx->buttons[7]->autotrigger = SDLX_TRUE;
 
 	dst.x = scroll.x + 73;
 	dst.y = scroll.y + 128;
-	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[8]->sprite);
+	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[9]->sprite);
 
 
 	dst.x = scroll.x + 95;
 	dst.y = scroll.y + 128;
-	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[9]->sprite);
+	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[10]->sprite);
 
 /// BOTTOM ROW
 
 	dst.x = scroll.x + 37;
 	dst.y = scroll.y + 160;
-	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[10]->sprite);
-
-	dst.x = scroll.x + 60;
-	dst.y = scroll.y + 160;
 	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[11]->sprite);
 
-
-	dst.x = scroll.x + 85;
+	dst.x = scroll.x + 60;
 	dst.y = scroll.y + 160;
 	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[12]->sprite);
 
 
-	dst.x = scroll.x + 100;
+	dst.x = scroll.x + 85;
 	dst.y = scroll.y + 160;
 	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[13]->sprite);
+
+
+	dst.x = scroll.x + 100;
+	dst.y = scroll.y + 160;
+	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[14]->sprite);
 
 
 //BOTTOM MOST POINT
 	dst.x = scroll.x + 73;
 	dst.y = scroll.y + 195;
-	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[14]->sprite);
+	SDLX_AnimatorCreate(NULL, a_beam, 1, &dst, &ctx->buttons[15]->sprite);
 
 ///////////////////////////////////////
-	ctx->buttons[2]->sprite.center = (SDL_Point){0, dst.h / 2};
-	ctx->buttons[2]->sprite.animator->active = SDLX_FALSE;
-	ctx->buttons[2]->data = &ctxFalse;
 
-	ctx->buttons[3]->sprite.center = (SDL_Point){0, dst.h / 2};
+	SDL_Log("Setting sprites\n");
+	ctx->buttons[3]->spriteptr->center = (SDL_Point){0, dst.h / 2};
 	ctx->buttons[3]->sprite.animator->active = SDLX_FALSE;
 	ctx->buttons[3]->data = &ctxFalse;
 
@@ -171,21 +176,26 @@ void main_levelInit(void *arg)
 	ctx->buttons[14]->sprite.animator->active = SDLX_FALSE;
 	ctx->buttons[14]->data = &ctxFalse;
 
+	ctx->buttons[15]->sprite.center = (SDL_Point){0, dst.h / 2};
+	ctx->buttons[15]->sprite.animator->active = SDLX_FALSE;
+	SDL_Log("Sprite %p \n", ctx->buttons[3]->spriteptr);
+	ctx->buttons[15]->data = &ctxFalse;
 
 
-	SDLX_GUIElem_SetActive(ctx->buttons[2 ], SDLX_TRUE);
-	SDLX_GUIElem_SetActive(ctx->buttons[3 ], SDLX_TRUE);
-	SDLX_GUIElem_SetActive(ctx->buttons[4 ], SDLX_TRUE);
-	SDLX_GUIElem_SetActive(ctx->buttons[5 ], SDLX_TRUE);
-	SDLX_GUIElem_SetActive(ctx->buttons[6 ], SDLX_TRUE);
-	SDLX_GUIElem_SetActive(ctx->buttons[7 ], SDLX_TRUE);
-	SDLX_GUIElem_SetActive(ctx->buttons[8 ], SDLX_TRUE);
-	SDLX_GUIElem_SetActive(ctx->buttons[9 ], SDLX_TRUE);
+	SDL_Log("ACTIVATING buttons\n");
+	SDLX_GUIElem_SetActive(ctx->buttons[ 3], SDLX_TRUE);
+	SDLX_GUIElem_SetActive(ctx->buttons[ 4], SDLX_TRUE);
+	SDLX_GUIElem_SetActive(ctx->buttons[ 5], SDLX_TRUE);
+	SDLX_GUIElem_SetActive(ctx->buttons[ 6], SDLX_TRUE);
+	SDLX_GUIElem_SetActive(ctx->buttons[ 7], SDLX_TRUE);
+	SDLX_GUIElem_SetActive(ctx->buttons[ 8], SDLX_TRUE);
+	SDLX_GUIElem_SetActive(ctx->buttons[ 9], SDLX_TRUE);
 	SDLX_GUIElem_SetActive(ctx->buttons[10], SDLX_TRUE);
 	SDLX_GUIElem_SetActive(ctx->buttons[11], SDLX_TRUE);
 	SDLX_GUIElem_SetActive(ctx->buttons[12], SDLX_TRUE);
 	SDLX_GUIElem_SetActive(ctx->buttons[13], SDLX_TRUE);
 	SDLX_GUIElem_SetActive(ctx->buttons[14], SDLX_TRUE);
+	SDLX_GUIElem_SetActive(ctx->buttons[15], SDLX_TRUE);
 
 	mainlvl.norder = 0;
 	mainlvl.drawing = SDLX_FALSE;

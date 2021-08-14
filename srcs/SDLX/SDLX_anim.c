@@ -203,7 +203,7 @@ void SDLX_AnimationUpdate(void)
 
 				animator->spriteptr->sprite_sheet = animator->anims[state]->sprite_sheet;
 
-				SDLX_RenderQueueAdd(0, *animator->spriteptr);
+				SDLX_RenderQueueAdd(animator->sprite.queue, *animator->spriteptr);
 				if (meta->stateLock == frame)
 				{
 					meta->stateLock = -1;
