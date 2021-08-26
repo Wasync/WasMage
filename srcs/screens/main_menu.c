@@ -111,5 +111,6 @@ void main_menuCleanup(void *arg)
 	SDLX_GUIElem_SetActive(ctx->buttons[0], SDLX_FALSE);
 	SDLX_GUIElem_SetActive(ctx->buttons[1], SDLX_FALSE);
 	SDLX_GUIElem_SetActive(ctx->buttons[2], SDLX_FALSE);
+	// flushSprites();
 	SDL_Log("Cleanup main menu\n");
 }

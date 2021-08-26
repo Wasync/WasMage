@@ -28,6 +28,8 @@ void SDLX_RenderInit(void)
 	}
 }
 
+extern SDLX_Animator *a;
+
 void	SDLX_ResetWindow(void)
 {
 	SDLX_Display *display;

@@ -1,14 +1,17 @@
 #include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
 
-int main(void)
+int recurse(int prev, int n)
 {
-	void *ptr;
-	u_int8_t *p;
+	if (n == -1)
+		return prev;
+	prev = recurse(prev, n - 1);
+	return prev * 2 - n;
+}
 
-	ptr = malloc(12 *sizeof(void));
-	p = ptr + 3;
+int main()
+{
+	int *str;
 
-	printf("float %p fouble %p \n",ptr, p);
+	printf("Char %lu, sizeof *str %lu", sizeof(int), sizeof(*str));
+	return 0;
 }

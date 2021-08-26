@@ -14,6 +14,7 @@ typedef struct SDLX_LvlManager
 
 static SDLX_LvlManager manager;
 static void *manargs;
+static int state;
 
 void SDLX_LevelManagerAdd(int level, SDLX_LevelFunc lvlInit, SDLX_LevelFunc lvlLoop, SDLX_LevelFunc lvlCleanUp)
 {
@@ -27,17 +28,22 @@ void SDLX_LevelManagerStart(int level, void *args)
 	SDL_Log("Starting with  lvl %d \n", level);
 	manager.currentLevel = level;
 	manargs = args;
-	manager.levels[manager.currentLevel][INIT](manargs);
+	// manager.levels[manager.currentLevel][INIT](manargs);
+	state = INIT;
 }
 
 void SDLX_LevelManagerSwitch(int level, void *args)
 {
 	SDL_Log("Switch from %d to %d\n", manager.currentLevel, level);
+
+	// if (mode = SDLX_DELAYSWITCH)
+
 	if (manager.levels[manager.currentLevel][CLEANUP])
-		manager.levels[manager.currentLevel][CLEANUP](NULL);
+		manager.levels[manager.currentLevel][CLEANUP](args);
 	SDLX_InputResetBuffer();
-	if (manager.levels[level][INIT])
-		manager.levels[level][INIT](NULL);
+	state = INIT;
+	// if (manager.levels[level][INIT])
+	// 	manager.levels[level][INIT](args);
 
 	manager.currentLevel = level;
 	manargs = args;
@@ -45,5 +51,11 @@ void SDLX_LevelManagerSwitch(int level, void *args)
 
 void SDLX_LevelRun(void)
 {
-	manager.levels[manager.currentLevel][LOOP](manargs);
+	if (state == INIT)
+	{
+		manager.levels[manager.currentLevel][INIT](manargs);
+		state = LOOP;
+	}
+	else
+		manager.levels[manager.currentLevel][LOOP](manargs);
 }

@@ -26,8 +26,8 @@ Context *init_game(void)
 	// tex = SDL_CreateTextureFromSurface(SDLX_DisplayGet()->renderer, IMG_Load("Assets/phBG.png"));
 	// SDLX_BackgroundSet(tex);
 
-	SDLX_LevelManagerAdd(0, main_menuInit, main_menu, main_menuCleanup);
-	SDLX_LevelManagerAdd(1, main_levelInit, main_level, main_levelCleanup);
+	// SDLX_LevelManagerAdd(0, main_menuInit, main_menu, main_menuCleanup);
+	SDLX_LevelManagerAdd(0, main_levelInit, main_level, main_levelCleanup);
 	// SDLX_LevelManagerAdd(0, test_levelInit, test_level, test_levelCleanup);
 	// SDLX_LevelManagerAdd(2, test_levelInit, test_level, test_levelCleanup);
 	SDLX_LevelManagerStart(0, &ctx);

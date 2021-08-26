@@ -43,7 +43,7 @@ SDLX_Animator *SDLX_AnimatorCreate(SDLX_Animator *copy, SDLX_Anim **anims, int a
 		node->elem.anims = copy->anims;
 		node->elem.amount = copy->amount;
 		node->elem.sprite = copy->sprite;
-		node->elem.spriteptr = &node->elem.sprite;
+		node->elem.spriteptr = &(node->elem.sprite);
 		node->elem.sprite.dstptr = &node->elem.sprite.dst;
 	}
 	else
@@ -74,7 +74,7 @@ SDLX_Animator *SDLX_AnimatorCreate(SDLX_Animator *copy, SDLX_Anim **anims, int a
 		// node->elem.sprite.dstptr = dst;
 	}
 	// else
-	node->elem.sprite.dstptr = &node->elem.sprite.dst;
+	node->elem.sprite.dstptr = &(node->elem.sprite.dst);
 
 	// SDL_Log("HERE");
 	node->elem.sprite.animator = &node->elem;
@@ -184,7 +184,6 @@ void SDLX_AnimationUpdate(void)
 	{
 		node = _intern.head->next;
 		i = 0;
-		// SDL_Log("HERE");
 		while (node != NULL)
 		{
 			if (node->elem.active == SDLX_TRUE && node->elem.anims)
@@ -195,12 +194,19 @@ void SDLX_AnimationUpdate(void)
 				meta = node->elem.metadata;
 				queue = animator->sprite.queue;
 
+				// SDL_Log("INSIDE ANIM %p", animator);
 				if (animator->anims[state]->loop != SDL_FALSE)
 					animator->frameNo = (frame + 1) % animator->anims[state]->cycle;
 				else
 					animator->frameNo += 1 * (frame < animator->anims[state]->cycle - 1);
+				// SDL_Log("SPRITEPTR %p DSTPTR %p", animator->spriteptr, animator->spriteptr->dstptr);
+				// SDL_Log("Cast dst (%d,%d) w: %d, h: %d",
+				// 	animator->spriteptr->dstptr->x,
+				// 	animator->spriteptr->dstptr->y,
+				// 	animator->spriteptr->dstptr->h,
+				// 	animator->spriteptr->dstptr->w
+				// );
 				animator->spriteptr->srcptr = &animator->anims[state]->srcs[frame];
-
 				animator->spriteptr->sprite_sheet = animator->anims[state]->sprite_sheet;
 
 				SDLX_RenderQueueAdd(animator->sprite.queue, *animator->spriteptr);
@@ -210,6 +216,7 @@ void SDLX_AnimationUpdate(void)
 					animator->state = meta->nextAnim;
 					animator->frameNo = 0;
 				}
+				// SDL_Log("DST PTR 1 %p", animator->spriteptr->dstptr);
 			}
 			node = node->next;
 		}
@@ -223,6 +230,9 @@ void SDLX_Animator_StateSet(SDLX_Animator *anim,int newState, int awaitCurrent)
 	SDLX_AnimatorMeta *meta;
 
 	meta = anim->metadata;
+	//Maybe return int, or don't check for error here
+	if (newState > anim->amount)
+		return ;
 	if (awaitCurrent == SDLX_AWAITANIM || awaitCurrent >= anim->anims[anim->state]->cycle)
 	{
 		meta->stateLock = anim->anims[anim->state]->cycle - 1;

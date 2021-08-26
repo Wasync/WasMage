@@ -14,17 +14,22 @@ Do later maybe if it becomes an issue
 }
 
 Add cooldown to spell !!!!!!!!!!!! NEED ANIMATION FIRST !!!!!!!!!!!!!!!!!!!
-	Potentially keep ref to parent & decrease cd || Set recharge anim state & wait until anim done
 	State : 0 -> Ready
 			1 -> Charging
 			2 -> launching;
 	If state != 0, can't cast
 
-BEFORE LEAVING
-
-Integrate new assets (main menu and IG overlay)
-
 Collisions
+	Rect
+
+Enemies :
+	Leve
+	Wave has :
+			UpdateFunc
+			spawn func
+			isOver check
+			Cleanup Func
+
 
 Maybe animator shouldn't display sprites.
 It should modify their data to match the animation
@@ -80,13 +85,8 @@ Death screen
 ------------- SDLX -----------------------
 
 ---------- Asssets ---------------
-- Scroll
-- Fireball hands
-- Idle hands
 - Menu icons
-	- Spellbook
 	- Shop
-	- Continue
 	- Scores
 
 - Spell icons
@@ -94,5 +94,6 @@ Death screen
 	- Ice ball
 	- Lightning
 
+Launch not trigger if within scroll area
 
 Refactor

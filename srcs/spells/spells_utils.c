@@ -21,10 +21,39 @@ void CastSpell(int id)
 		if (ctx->spells[i].info.id == id)
 		{
 			ctx->current = &ctx->spells[i];
+			SDL_Log("cast %d as %d",id,  i);
+			ctx->current->cast.animator->active = SDLX_TRUE;
+			ctx->current->projectile.animator->active = SDLX_FALSE;
+			ctx->current->info.elapsed = &ctx->current->cast.animator->frameNo;
+			ctx->current->info.state = &ctx->current->cast.animator->state;
+			*ctx->current->info.state = 1;
+			*ctx->current->info.elapsed = 0;
 			break ;
 		}
 		i++;
 	}
+}
+
+int ReadyCheck(Spell *spell)
+{
+	if (!spell->info.id)
+		return 0;
+	// SDL_Log("Spell State %d frame %d", *spell->info.state, *spell->info.elapsed );
+	if (*spell->info.state == 2 && *spell->info.elapsed == spell->info.castTime)
+		SDLX_Animator_StateSet(spell->cast.animator, 1, SDLX_FALSE);
+	if (*spell->info.state == 1 && *spell->info.elapsed == spell->info.chargeTime)
+		SDLX_Animator_StateSet(spell->cast.animator, 0, SDLX_FALSE);
+	return *spell->info.state == 0;
+}
+
+void ActivateSpell(Spell *spell)
+{
+	spell->info.elapsed = &spell->projectile.animator->frameNo;
+	spell->info.state = &spell->projectile.animator->state;
+	spell->projectile.animator->active = SDLX_TRUE;
+	spell->cast.animator->active = SDLX_FALSE;
+	spell->cast.dstptr->x = STARTX;
+	spell->cast.dstptr->y = STARTY;
 }
 
 int GetSpell(void)
@@ -83,7 +112,10 @@ void DrawSpell(void)
 void CopySpell(Spell *src, Spell *dst)
 {
 	dst->info = src->info;
-	dst->sprite.animator->anims = src->sprite.animator->anims;
-	dst->sprite.animator->amount = src->sprite.animator->amount;
-	dst->sprite.animator->frameNo = 0;
+	dst->cast.animator->anims = src->cast.animator->anims;
+	dst->cast.animator->amount = src->cast.animator->amount;
+	dst->cast.animator->frameNo = 0;
+	dst->projectile.animator->anims = src->projectile.animator->anims;
+	dst->projectile.animator->amount = src->projectile.animator->amount;
+	dst->projectile.animator->frameNo = 0;
 }
