@@ -1,8 +1,5 @@
 # include "rush.h"
 
-static MainLevel mainlvl;
-
-
 void main_levelInit(void *arg)
 {
 	SDLX_Anim	**a_beam;
@@ -29,13 +26,12 @@ void main_levelInit(void *arg)
 	scroll.y = WIN_H - scroll.h ;
 
 	ctx->nsprites = 0;
-	// SDL_Log("new sprite %p", &ctx->sprites[ctx->nsprites]);
-	// SDL_Log("new sprite %p", &ctx->sprites[ctx->nsprites]);
 	SDLX_SpriteCreate(&ctx->scroll , t_scroll, NULL, &scroll);
 	ctx->scroll.queue = 0;
 	ctx->scroll.srcptr = NULL;
 
 	initSpells();
+	initSpellData();
 
 
 	dst.h = 10;
@@ -190,11 +186,14 @@ void main_levelInit(void *arg)
 	ctx->buttons[15]->sprite.animator->active = SDLX_FALSE;
 	ctx->buttons[15]->data = &ctxFalse;
 
-	mainlvl.norder = 0;
-	mainlvl.drawing = SDLX_FALSE;
-	ctx->lvl_data = &mainlvl;
+	ctx->level.norder = 0;
+	ctx->level.drawing = SDLX_FALSE;
+
+	init_enemies();
+	init_enemyData();
+	ctx->level.area = loadArea(0);
+	NextWave(ctx->level.area);
 	SDL_Log("Init main lvl\n");
-	// SDL_Log("dstptr %p", ctx->spells[0].cast.dstptr);
 
 }
 
@@ -202,42 +201,50 @@ void main_level(void *arg)
 {
 	SDLX_Input input;
 	Context *ctx;
-	MainLevel *lvl;
 	int i;
 	int ready;
 
 	ctx = getCtx();
-	lvl = (MainLevel *)ctx->lvl_data;
 	input = SDLX_InputGet();
 	i = 0;
 
 	ctx->nsprites = 0;
-	ready = ReadyCheck(ctx->current)
+	ready = ReadyCheck(ctx->player.current)
 		&& input.mouse_click == SDL_MOUSEBUTTONDOWN
 		&& !(SDL_PointInRect(&input.mouse, ctx->scroll.dstptr));
+	// if (ctx->level.area->waves[ctx->level.area->currentWave].nAlive <= 0)
+	// 	NextWave(ctx->level.area);
+	while (i < ctx->nenmies)
+	{
+		if (ctx->enemy_data[i].info.id != 0)
+			ctx->enemy_data[i].info.func(&ctx->enemy_data[i]);
+		i++;
+	}
+	i = 0;
 	while(i < 1)
 	{
-		if (ctx->active[i].info.id && ctx->active[i].info.func(&ctx->active[i]))
+		if (ctx->player.active[i].info.id && ctx->player.active[i].info.func(&ctx->player.active[i]))
 		{
-			SDL_Log("Launch info : elapsed: %d , duration %d , anim %d ",
-					*ctx->active[i].info.elapsed, ctx->active[i].info.duration, ctx->active[i].projectile.animator->active);
-			ctx->active[i].info.id = 0;
-			ctx->active[i].projectile.animator->active = SDLX_FALSE;
-			ctx->active[i].projectile.dst.x = STARTX - 64;
-			ctx->active[i].projectile.dst.y = STARTY - 64;
+			ctx->player.active[i].info.id = 0;
+			ctx->player.active[i].collider.active = SDLX_FALSE;
+			ctx->player.active[i].projectile.animator->active = SDLX_FALSE;
+			ctx->player.active[i].projectile.dst.x = STARTX - 64;
+			ctx->player.active[i].projectile.dst.y = STARTY - 64;
+
 		}
-		if (ready && ctx->current->info.id != 0 && ctx->active[i].info.id == 0)
+
+		if (ready && ctx->player.current->info.id != 0 && ctx->player.active[i].info.id == 0)
 		{
-			CopySpell(ctx->current, &ctx->active[i]);
-			ActivateSpell(&ctx->active[i]);
-			SDLX_Animator_StateSet(ctx->current->cast.animator, 2, SDLX_FALSE);
+			CopySpell(ctx->player.current, &ctx->player.active[i]);
+			ActivateSpell(&ctx->player.active[i]);
+			SDLX_Animator_StateSet(ctx->player.current->cast.animator, 2, SDLX_FALSE);
 			ready = SDLX_FALSE;
-			ctx->active[i].step.x = (ctx->active[i].projectile.dst.x - (input.mouse.x - 64)) / 7;
-			ctx->active[i].step.y = (ctx->active[i].projectile.dst.y - (input.mouse.y - 64)) / 7;
+			ctx->player.active[i].step.x = (ctx->player.active[i].projectile.dst.x - (input.mouse.x - 64)) / 7;
+			ctx->player.active[i].step.y = (ctx->player.active[i].projectile.dst.y - (input.mouse.y - 64)) / 7;
 		}
 		i++;
 	}
-	if (lvl->drawing == SDLX_TRUE)
+	if (ctx->level.drawing == SDLX_TRUE)
 	{
 		DrawSpell();
 		if (input.mouse_click == SDL_MOUSEBUTTONUP)
@@ -245,6 +252,11 @@ void main_level(void *arg)
 	}
 	ctx->sprites[ctx->nsprites] = ctx->scroll;
 	ctx->nsprites++;
+	SDLX_PollCollisions();
+	// SDL_Log("Poll");
+	SDLX_ResolveCollisions();
+	// SDL_Log("REsolve");
+	// CollisionCheck(ctx->enemy_data, ctx->nenemies, ctx->player.active, 10);
 	renderSprites();
 }
 

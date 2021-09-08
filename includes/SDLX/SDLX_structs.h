@@ -23,6 +23,10 @@
 struct SDLX_GUIMeta;
 struct SDLX_Animator;
 // typedef struct SDLX_GUIMeta  GUIMETA;
+typedef struct SDLX_Collider SDLX_Collider;
+
+typedef int (* SDLX_CollisionFn)(struct SDLX_Collider *, struct SDLX_Collider *);
+typedef void (* SDLX_ReactionFn)(struct SDLX_Collider *, struct SDLX_Collider *);
 
 enum
 {
@@ -147,6 +151,27 @@ typedef struct SDLX_GUIElem
 
 	const char *name;
 }				SDLX_GUIElem;
+
+typedef struct SDLX_Collider
+{
+	void	 	*collisionBoxPtr;
+	SDL_Rect 	collisionBox;
+
+	SDLX_CollisionFn collisionFn;
+	SDLX_ReactionFn	 reactionFn;
+
+	int 		active;
+	int			layerMask;
+	void		*data;
+}				SDLX_Collider;
+
+typedef struct SDLX_Collision
+{
+	SDLX_Collider	*collidedWith;
+	SDLX_Collider	*self;
+
+}				SDLX_Collision;
+
 
 
 typedef void (* SDLX_LevelFunc)(void *);

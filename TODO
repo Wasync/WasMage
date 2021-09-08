@@ -48,7 +48,6 @@ Death screen
 -------------- CORE_GAMEPLAY --------------
 - Mana substracted & regeneration
 - Enemy walk towards crysal
-- Enemy collision
 - Enemy attack
 - Spellbook menu
 - Pause Menu
@@ -84,6 +83,8 @@ Death screen
 
 ------------- SDLX -----------------------
 
+- Rework SDLX_Anim load to take & fill procided anm array
+
 ---------- Asssets ---------------
 - Menu icons
 	- Shop
@@ -94,6 +95,49 @@ Death screen
 	- Ice ball
 	- Lightning
 
-Launch not trigger if within scroll area
+Monster abilities:
+
+Magic Ward: Protects for X damage, mage & monster spell. Broken when damage threshold reached.
+Weak to some spell type
+
+Shoots towards mage. Must counter with spell;
+
+
+Spell types : Fire, Water, Ice, Lightning, Light, Shadow, Earth;
+
+Fire -> Ice -> Earth -> Lightning -> Water -> Fire
+
+Light -> Shadow
+
+---------------------------
 
 Refactor
+
+Spell use Mana
+player HP
+Deathh screen
+Pause Screen
+
+Enemy drop coin & collect
+Enemy Formations.
+
+
+Enemy Spells.
+Player Spells.
+
+
+Main Menu Shop: Permanent spell Upgrade;
+
+Area 1;
+In-game Shop -> x random upgrades + reroll (for $$)
+
+
+
+Refactor
+
+
+SHORTCUTS:
+
+- Successive values
+- move highligheted left & right
+- Open file from explorer

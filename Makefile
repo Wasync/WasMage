@@ -13,6 +13,8 @@ SDLX_DIR = SDLX/
 BUTTON_DIR = buttons/
 SCREEN_DIR = screens/
 SPELL_DIR = spells/
+ENEMY_DIR = enemies/
+AREAS_DIR = areas/
 SRCS_DIR = srcs/
 
 BIN_DIR = bin/
@@ -20,6 +22,7 @@ BIN_DIR = bin/
 
 SDLX_NAMES = 			\
 	SDLX_anim			\
+	SDLX_collision		\
 	SDLX_input			\
 	SDLX_LevelManager	\
 	SDLX_render			\
@@ -45,12 +48,21 @@ SPELL_NAMES =			\
 	spells_init			\
 	spells_utils		\
 
+ENEMY_NAMES = 			\
+	enemies_fn			\
+	enemies_init		\
+
+AREAS_NAMES = 			\
+	areas_init			\
+
 SRCS_NAMES =									\
 	$(addprefix $(SDLX_DIR),	$(SDLX_NAMES))	\
 	$(addprefix $(MT_DIR),		$(MT_NAMES))	\
 	$(addprefix $(BUTTON_DIR),	$(BUTTON_NAMES))\
 	$(addprefix $(SCREEN_DIR),	$(SCREEN_NAMES))\
 	$(addprefix $(SPELL_DIR),	$(SPELL_NAMES))	\
+	$(addprefix $(ENEMY_DIR),	$(ENEMY_NAMES))	\
+	$(addprefix $(AREAS_DIR),	$(AREAS_NAMES))	\
 	debug				\
 	init				\
 	main 				\

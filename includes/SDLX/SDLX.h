@@ -28,6 +28,7 @@
 # include "SDLX_render.h"
 # include "SDLX_UI.h"
 # include "SDLX_utils.h"
+# include "SDLX_collisions.h"
 
 /**
  * @brief initializes SDLX and creates a display

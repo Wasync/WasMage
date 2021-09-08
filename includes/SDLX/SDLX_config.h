@@ -7,9 +7,9 @@
  *
  *	@brief: Defines used to setup SDLX
  */
+
 #ifndef SDLX_CONFIG_H
 # define SDLX_CONFIG_H
-#include <SDL2/SDL.h>
 
 # define NAN_VAL 0
 
@@ -23,7 +23,7 @@
 # define WIN_Y (SDL_WINDOWPOS_CENTERED)
 
 # define SAVE_FILE_PATH NULL
-# define ASSETS_PATH NULL
+# define ASSETS_PATH "Assets/"
 
 /* Used in FPSAdjust to controle framerate and deliver consistent FPS */
 # define FRAMERATE (30)

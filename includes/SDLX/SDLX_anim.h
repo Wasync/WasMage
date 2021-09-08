@@ -28,6 +28,6 @@ SDLX_Animator *SDLX_AnimatorCreate(SDLX_Animator *copy, SDLX_Anim **anims, int a
  */
 SDLX_Anim		*SDLX_AnimLoadHorizontal(SDL_Texture *tex, int cycle, int cell_w, int cell_h, SDL_bool loop, int x_off, int y_off);
 SDLX_Anim		*SDLX_AnimLoadVertical(SDL_Texture *tex, int cycle, int cell_w, int cell_h, SDL_bool loop, int x_off, int y_off);
-
+void SDLX_AnimatorCopy(SDLX_Animator *dst, SDLX_Animator *src);
 
 #endif

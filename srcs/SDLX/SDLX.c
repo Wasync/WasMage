@@ -38,6 +38,7 @@ void			SDLX_Start(char *name, int x, int y, int h, int w, int flags)
 		SDL_Init(SDL_INIT_EVERYTHING);
 	TTF_Init();
 	SDLX_DisplaySet(name, x, y, h, w, flags);
+	SDLX_CollisionsInit();
 	SDLX_RenderInit();
 	SDLX_AnimInit();
 	SDLX_GUIInit();

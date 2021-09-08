@@ -59,3 +59,8 @@ int SDLX_PointInCircle(SDL_Point point, SDLX_Circle circle)
 		&&	point.y >= circle.y - circle.radius
 	);
 }
+
+int		SDLX_DefaultCollision(SDLX_Collider *self, SDLX_Collider *other)
+{
+	return SDL_HasIntersection(self->collisionBoxPtr, other->collisionBoxPtr);
+}

@@ -1,100 +1,29 @@
 #ifndef RUSH_H
 # define RUSH_H
 
-
-# include "SDLX/SDLX.h"
+# include "rush_structs.h"
 # include "buttons.h"
+# include "enemies.h"
 
 # define STARTX 230
 # define STARTY 769
 # define FBALL 20616
-
-typedef int (*SpellFn)();
-typedef void (*EnemyFn)(void *);
-
-typedef struct  SpellInfo
-{
-	int 		id;
-	int 		cd;
-	int 		cost;
-	int			active;
-	int 		duration;
-	int 		castTime;
-	int 		chargeTime;
-	int 		*state;
-	int 		*elapsed;
-
-	SpellFn func;
-
-}				SpellInfo;
-
-typedef struct Spell
-{
-	SpellInfo info;
-
-	SDL_Point	step;
-	SDLX_Sprite cast;
-	SDLX_Sprite projectile;
-	SDL_Texture *spellPage;
-
-}			Spell;
-
-typedef struct Enemy
-{
-	int		id;
-	int 	hp;
-	int		type;
-
-	SDLX_Sprite sprite;
-	SDL_Rect 	hitbox;
-
-	EnemyFn		func;
-
-}				Enemy;
-
-typedef struct MainLevel
-{
-	Spell		active[10];
-	Spell		*current;
-
-	Enemy		enemies[100];
-}				MainLevel;
-
-typedef struct PlayerData
-{
-	
-}
-
-typedef struct Context
-{
-	SDLX_GUIElem	*buttons[100];
-	SDLX_Sprite  	sprites[100];
-	SDLX_Sprite		scroll;
-
-	Spell 		spells[20];
-
-	Enemy		enemy_data[20];
-
-	void *lvl_data;
-
-	int nbuttons;
-	int nsprites;
-	int nspells;
-	int lvl;
-}			Context;
-
-typedef struct MainLevel
-{
-	SDLX_GUIElem *order[13];
-	int norder;
-	int drawing;
-	int state;
-}				MainLevel;
+# define NTYPES 6
 
 
 static int ctxTrue = SDLX_TRUE;
 static int ctxFalse = SDLX_FALSE;
 static Spell NoSpell;
+
+static int const weaknessTable [NTYPES][NTYPES] = {
+	{10, 20, 10,  5, 10, 10 }, //FIRE
+	{ 5, 10, 20, 10, 10, 10 }, //ICE
+	{10,  5, 10, 20, 10, 10 }, //EARTH
+	{20, 10,  5, 10, 10, 10 }, //WATER
+
+	{10, 10, 10, 10, 10, 20 }, //LIGHT
+	{10, 10, 10, 10, 20, 10 }, //SHADOW
+};
 
 // Ref for scroll UI so no need to allocate
 
@@ -125,8 +54,13 @@ void	renderSprites(void);
 void	flushSprites(void);
 
 int 	initSpells();
+int 	initSpellData(void);
 int 	Fireball(Spell *spell);
 int 	NoSpellFn(Spell *spell);
 
+int		spell_collide(SDLX_Collider *self, SDLX_Collider *other);
+void	fireball_react(SDLX_Collider *self, SDLX_Collider *other);
+
+// void	CollisionCheck(Enemy *enemies, int nenemies, Spell *spells, int nspells);
 
 #endif

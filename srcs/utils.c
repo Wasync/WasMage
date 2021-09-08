@@ -1,5 +1,6 @@
 #include "rush.h"
 
+
 void renderSprites(void)
 {
 	SDLX_Display *display;
@@ -36,27 +37,44 @@ void flushSprites(void)
 	ctx->nsprites = 0;
 }
 
-void CollisionCheck(Enemy *enemies, Spell *spells)
+void CopyEnemy(Enemy *dst, Enemy*src)
 {
-	int i;
-	int n;
+	dst->info = src->info;
+	SDLX_AnimatorCopy(dst->sprite.animator, src->sprite.animator);
+	dst->sprite.angle = src->sprite.angle;
+	dst->sprite.center = src->sprite.center;
+	dst->sprite.flip = src->sprite.flip;
+	dst->sprite.dst = *src->sprite.dstptr;
+}
 
-	i = 0;
+int NextWave(Area *area)
+{
+	Context *ctx;
+	Wave *wave;
 
-	while (i < 10)
+
+	if (area->currentWave == area->nwaves)
+		return -1;
+	ctx = getCtx();
+	area->currentWave++;
+	wave = &(area->waves[area->currentWave]);
+	ctx->nenmies = wave->nenemies;
+	for (int i = 0; i < wave->nenemies; i++)
 	{
-		n = 0;
-
-		if (spells[i].info.active)
-		{
-			while (n < 50)
-			{
-				if (SDL_HasIntersection(&spells[i].projectile.dstptr, &enemies[n].hitbox))
-					SDL_Log("Hit");
-				n++;
-			}
-		}
-		i++;
+		CopyEnemy(&ctx->enemy_data[i], &wave->enemies[i]);
+		ctx->enemy_data[i].sprite.animator->active = SDLX_TRUE;
+		ctx->enemy_data[i].collider.active = SDLX_TRUE;
 	}
+}
 
+int spell_collide(SDLX_Collider *self, SDLX_Collider *other)
+{
+	SDL_Rect *rect;
+	SDL_Point point;
+
+	rect = (SDL_Rect *)self->collisionBoxPtr;
+	point.x = rect->x + (rect->w / 2);
+	point.y = rect->y + (rect->h / 2);
+	return (((Spell *)self->data)->info.active &&
+		SDL_PointInRect(&point, other->collisionBoxPtr));
 }

@@ -22,24 +22,22 @@ int DrawButtonHover(SDLX_GUIElem *elem)
 	MainLevel *lvlData;
 
 	ctx = getCtx();
-	lvlData = ctx->lvl_data;
-	lvlData = (MainLevel *)(ctx->lvl_data);
 
-	if (lvlData->drawing == SDLX_TRUE && *(int *)elem->data == SDLX_FALSE)
+	if (ctx->level.drawing == SDLX_TRUE && *(int *)elem->data == SDLX_FALSE)
 	{
-		if(lvlData->norder != 0)
+		if(ctx->level.norder != 0)
 		{
-			lvlData->order[lvlData->norder - 1]->sprite.dst.w += 4;
+			ctx->level.order[ctx->level.norder - 1]->sprite.dst.w += 4;
 		}
 		// Fix by changing w toditance between them
 		// to be correct but can't be done without extra sqrt
 		// & will be a little off anyways
 		// AVoid for now
 		// }
-		lvlData->order[lvlData->norder] = elem;
+		ctx->level.order[ctx->level.norder] = elem;
 		elem->sprite.animator->active = SDLX_TRUE;
 		elem->data = &ctxTrue;
-		lvlData->norder++;
+		ctx->level.norder++;
 	}
 	return 0;
 }
@@ -47,14 +45,11 @@ int DrawButtonHover(SDLX_GUIElem *elem)
 int DrawButtonTrigger(SDLX_GUIElem *elem)
 {
 	Context *ctx;
-	MainLevel *lvlData;
 	ctx = getCtx();
 
-		SDL_Log("Is Trigger %s", elem->name);
-	lvlData = (MainLevel *)(ctx->lvl_data);
-	lvlData->order[0] = elem;
-	lvlData->norder++;
-	lvlData->drawing = SDLX_TRUE;
+	ctx->level.order[0] = elem;
+	ctx->level.norder++;
+	ctx->level.drawing = SDLX_TRUE;
 	elem->sprite.animator->active = SDLX_TRUE;
 	elem->data = &ctxTrue;;
 
