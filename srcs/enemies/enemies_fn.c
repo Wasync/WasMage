@@ -17,6 +17,8 @@ int skullfn(Enemy *self)
 	else
 	{
 		self->sprite.dst->y += self->info.speed;
+		self->sprite.dst->w += self->info.speed;
+		self->sprite.dst->h += self->info.speed;
 	}
 
 	return 1;
