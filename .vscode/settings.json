@@ -9,6 +9,9 @@
 		"array": "c",
 		"string_view": "c",
 		"vector": "c",
-		"streambuf": "c"
+		"streambuf": "c",
+		"algorithm": "c",
+		"limits": "c",
+		"ratio": "c"
 	}
 }

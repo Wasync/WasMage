@@ -6,17 +6,17 @@ int skullfn(Enemy *self)
 	{
 		self->info.id = 0;
 		self->collider.active = SDL_FALSE;
-		self->sprite.animator->state = 2;
+		self->animator.state = 2;
 	}
-	if (self->sprite.dstptr->y + self->sprite.dstptr->h >= WIN_H - 128)
+	if (self->sprite.dst->y + self->sprite.dst->h >= WIN_H - 128)
 	{
 		self->info.id = 0;
 		self->collider.active = SDL_FALSE;
-		self->sprite.animator->state = 1;
+		self->animator.state = 1;
 	}
 	else
 	{
-		self->sprite.dstptr->y += self->info.speed;
+		self->sprite.dst->y += self->info.speed;
 	}
 
 	return 1;

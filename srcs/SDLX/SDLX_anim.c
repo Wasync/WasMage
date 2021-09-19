@@ -3,94 +3,74 @@
 
 # define ANIMS_CT 5
 
-typedef struct SDLX_AnimatorMeta
-{
-	int			stateLock;
-	int			nextAnim;
-}				SDLX_AnimatorMeta;
+// typedef struct SDLX_AnimatorMeta
+// {
+// 	int			stateLock;
+// 	int			nextAnim;
+// }				SDLX_AnimatorMeta;
 
-typedef struct SDLX_AnimatorInfo
-{
-	SDLX_Animator	elem;
-	SDLX_AnimatorMeta meta;
-	struct SDLX_AnimatorInfo *next;
-}				SDLX_AnimatorInfo;
+// typedef struct SDLX_Animatordest
+// {
+// 	SDLX_Animator		*elem;
+// 	SDLX_AnimatorMeta 	meta;
+// }				SDLX_Animatordest;
 
 typedef struct Anim_intern
 {
-	SDLX_AnimatorInfo *head;
-	SDLX_AnimatorInfo *tail;
+	SDLX_Animator **anims;
 
 	size_t animatorCount;
+	size_t animatorCap;
 }			Anim_intern;
 
 static Anim_intern _intern;
+/// !!!!!!!!!!!!!IMPORTANT !!!!!!!!!!!!
+// Now that this is an array, the ptr to meta will be invalid after realloc
+// Either find a way to store it sneakily or get rid of it
+// Meta controls animations and how to go from one to the next
+// i.e when switching anims, whether to wait for curent to finish or override
+
 
 void SDLX_AnimInit(void)
 {
 	_intern.animatorCount = 0;
-	_intern.head = calloc(1, sizeof(SDLX_AnimatorInfo));
-	_intern.tail = _intern.head;
+	_intern.animatorCap = ANIMS_CT;
+	_intern.anims = calloc(sizeof(SDLX_Animator *), ANIMS_CT);
 }
 
-SDLX_Animator *SDLX_AnimatorCreate(SDLX_Animator *copy, SDLX_Anim **anims, int amount, SDL_Rect *dst, SDLX_Sprite *sprite)
+void SDLX_AnimatorCreate(SDLX_Animator *dest, SDLX_Anim **anims, int amount, SDLX_Sprite *sprite)
 {
-	SDLX_AnimatorInfo *node;
+	// SDL_Log("DEst %p", dest);
 
-	node =  calloc(1, sizeof(SDLX_AnimatorInfo));
-	if (copy)
+	if (!dest)
+		return ;
+
+	if (_intern.animatorCount >= _intern.animatorCap)
 	{
-		node->elem.anims = copy->anims;
-		node->elem.amount = copy->amount;
-		node->elem.sprite = copy->sprite;
-		node->elem.spriteptr = &(node->elem.sprite);
-		node->elem.sprite.dstptr = &node->elem.sprite.dst;
+		_intern.animatorCap *= 2;
+		_intern.anims = realloc(_intern.anims, _intern.animatorCap * sizeof(SDLX_Animator *));
 	}
-	else
-	{
-		node->elem.anims = anims;
-		node->elem.amount = amount;
-	}
+	dest->anims = anims;
+	dest->amount = amount;
+
 	if (sprite)
 	{
-		node->elem.spriteptr = sprite;
-		node->elem.sprite = *sprite;
+		dest->sprite = sprite;
+		if (!dest->sprite->dst)
+			dest->sprite->dst = &(dest->sprite->_dst);
 	}
-	else
-	{
-		SDLX_SpriteCreate(&node->elem.sprite, NULL, NULL, dst);
-		node->elem.spriteptr = &node->elem.sprite;
-		node->elem.spriteptr->srcptr = &node->elem.sprite.src;
-	}
-	if (dst)
-	{
-		node->elem.sprite.dst = *dst;
-		if (sprite)
-		{
-			node->elem.spriteptr->dst = *dst;
-			if (!node->elem.spriteptr->dstptr)
-				node->elem.spriteptr->dstptr = &node->elem.spriteptr->dst;
-		}
-		// node->elem.sprite.dstptr = dst;
-	}
+
 	// else
-	node->elem.sprite.dstptr = &(node->elem.sprite.dst);
 
-	node->elem.sprite.animator = &node->elem;
-	node->elem.spriteptr->animator = &node->elem;
-	node->elem.frameNo = 0;
-	node->elem.state = 0;
+	dest->frameNo = 0;
+	dest->state = 0;
 
-	node->meta.stateLock = -1;
-	node->meta.nextAnim = -1;
-	node->elem.metadata = &node->meta;
+	dest->stateLock = -1;
+	dest->nextAnim = -1;
 
-	_intern.tail->next = node;
-	_intern.tail = node;
-	node->elem.active = SDLX_TRUE;
-
-
-	return &node->elem;
+	dest->active = SDLX_TRUE;
+	_intern.anims[_intern.animatorCount] = dest;
+	_intern.animatorCount++;
 }
 
 SDLX_Anim	*SDLX_AnimLoadVertical(SDL_Texture *tex, int cycle, int cell_w, int cell_h, SDL_bool loop, int x_off, int y_off)
@@ -166,65 +146,56 @@ void SDLX_AnimationUpdate(void)
 	int queue;
 
 	SDLX_Animator	*animator;
-	SDLX_AnimatorMeta *meta;
-	SDLX_AnimatorInfo *node;
 
-	if (_intern.head)
+	i = 0;
+	while (i < _intern.animatorCount)
 	{
-		node = _intern.head->next;
-		i = 0;
-		while (node != NULL)
+		if (_intern.anims[i]->active == SDLX_TRUE && _intern.anims[i]->anims)
 		{
-			if (node->elem.active == SDLX_TRUE && node->elem.anims)
+			animator = _intern.anims[i];
+			state = animator->state;
+			frame = animator->frameNo;
+			queue = animator->sprite->queue;
+
+			if (animator->anims[state]->loop != SDL_FALSE)
+				animator->frameNo = (frame + 1) % animator->anims[state]->cycle;
+			else
+				animator->frameNo += 1 * (frame < animator->anims[state]->cycle - 1);
+
+			animator->sprite->src = &animator->anims[state]->srcs[frame];
+			animator->sprite->sprite_sheet = animator->anims[state]->sprite_sheet;
+
+			SDLX_RenderQueueAdd(queue, *animator->sprite);
+			if (animator->stateLock == frame)
 			{
-				animator = &node->elem;
-				state = animator->state;
-				frame = animator->frameNo;
-				meta = node->elem.metadata;
-				queue = animator->sprite.queue;
-
-				if (animator->anims[state]->loop != SDL_FALSE)
-					animator->frameNo = (frame + 1) % animator->anims[state]->cycle;
-				else
-					animator->frameNo += 1 * (frame < animator->anims[state]->cycle - 1);
-
-				animator->spriteptr->srcptr = &animator->anims[state]->srcs[frame];
-				animator->spriteptr->sprite_sheet = animator->anims[state]->sprite_sheet;
-
-				SDLX_RenderQueueAdd(animator->sprite.queue, *animator->spriteptr);
-				if (meta->stateLock == frame)
-				{
-					meta->stateLock = -1;
-					animator->state = meta->nextAnim;
-					animator->frameNo = 0;
-				}
+				animator->stateLock = -1;
+				animator->state = animator->nextAnim;
+				animator->frameNo = 0;
 			}
-			node = node->next;
 		}
+		i++;
 	}
 }
 
 //refactor this
-void SDLX_Animator_StateSet(SDLX_Animator *anim,int newState, int awaitCurrent)
+void SDLX_Animator_StateSet(SDLX_Animator *anim, int newState, int awaitCurrent)
 {
-	SDLX_AnimatorMeta *meta;
 
-	meta = anim->metadata;
 	if (newState > anim->amount)
 		return ;
 	if (awaitCurrent == SDLX_AWAITANIM || awaitCurrent >= anim->anims[anim->state]->cycle)
 	{
-		meta->stateLock = anim->anims[anim->state]->cycle - 1;
-		meta->nextAnim = newState;
+		anim->stateLock = anim->anims[anim->state]->cycle - 1;
+		anim->nextAnim = newState;
 	}
 	else if (awaitCurrent > 0)
 	{
-		meta->stateLock = awaitCurrent;
-		meta->nextAnim = newState;
+		anim->stateLock = awaitCurrent;
+		anim->nextAnim = newState;
 	}
 	else
 	{
-		meta->stateLock = -1;
+		anim->stateLock = -1;
 		anim->frameNo = 0;
 		anim->state = newState;
 	}

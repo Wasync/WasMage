@@ -32,14 +32,14 @@ SDL_Texture *SDLX_LoadTexture(char *path, SDLX_Display *display)
 void SDLX_SpriteCreate(SDLX_Sprite *spriteDst, SDL_Texture *tex, SDL_Rect *src, SDL_Rect *dst)
 {
 	if (dst)
-		spriteDst->dst = *dst;
+		spriteDst->_dst = *dst;
 	if (src)
-		spriteDst->src = *src;
-	spriteDst->dstptr = &spriteDst->dst;
-	spriteDst->srcptr = &spriteDst->src;
+		spriteDst->_src = *src;
+	spriteDst->dst = &spriteDst->_dst;
+	spriteDst->src = &spriteDst->_src;
 	if (tex)
 		spriteDst->sprite_sheet = tex;
-
+	spriteDst->center = NULL;
 }
 
 int	SDLX_MouseInRect(int x, int y, SDL_Rect rect)
@@ -60,7 +60,7 @@ int SDLX_PointInCircle(SDL_Point point, SDLX_Circle circle)
 	);
 }
 
-int		SDLX_DefaultCollision(SDLX_Collider *self, SDLX_Collider *other)
+SDL_bool		SDLX_DefaultCollision(SDLX_Collider *self, SDLX_Collider *other)
 {
 	return SDL_HasIntersection(self->collisionBoxPtr, other->collisionBoxPtr);
 }

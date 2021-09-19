@@ -16,11 +16,11 @@ extern Enemy 	 _enemy_data[50];
 # define F_ADD(formation, data, _x, _y, _w, _h, offset)\
 {	\
 	memcpy(&(formation.enemies[offset]), &data, sizeof(data));\
-	formation.enemies[offset].sprite.dstptr = &formation.enemies[offset].sprite.dst;\
-	formation.enemies[offset].sprite.dst.x = _x;\
-	formation.enemies[offset].sprite.dst.y = _y;\
-	formation.enemies[offset].sprite.dst.w = _w;\
-	formation.enemies[offset].sprite.dst.h = _h;\
+	formation.enemies[offset].sprite.dst = &formation.enemies[offset].sprite._dst;\
+	formation.enemies[offset].sprite._dst.x = _x;\
+	formation.enemies[offset].sprite._dst.y = _y;\
+	formation.enemies[offset].sprite._dst.w = _w;\
+	formation.enemies[offset].sprite._dst.h = _h;\
 	formation.nenemies++;\
 	offset++; }\
 

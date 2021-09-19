@@ -2,6 +2,8 @@
 #include "SDLX_utils.h"
 #include "SDLX_input.h"
 
+// #define UISIZE sizeof(SDLX_GUIElem) + sizeof(int)
+
 # define GUICT 15
 # define U 0
 # define D 1
@@ -15,34 +17,31 @@
 # define WASSELECT 4
 
 
-typedef struct SDLX_GUIMeta
-{
-	int type;
-	int active;
-	int selectStatus;
-	int cd;
+// typedef struct SDLX_GUIMeta
+// {
+// 	int active;
+// 	int selectStatus;
 
-	SDLX_UIFunc		isSelectFn;
-	SDLX_UIFunc		UIFuncs[4];
-	SDLX_GUIElem	*neighbours[4];
+// 	SDLX_UIFunc		isSelectFn;
+// 	SDLX_UIFunc		UIFuncs[4];
+// 	SDLX_GUIElem	*neighbours[4];
+// }				SDLX_GUIMeta;
 
-	struct { int x, y; } coords;
-}				SDLX_GUIMeta;
+// typedef struct SDLX_GUIInfo
+// {
+// 	SDLX_GUIElem elem;
+// 	SDLX_GUIMeta meta;
 
-typedef struct SDLX_GUIInfo
-{
-	SDLX_GUIElem elem;
-	SDLX_GUIMeta meta;
-
-	struct SDLX_GUIInfo *next;
-}				SDLX_GUIInfo;
+// 	struct SDLX_GUIInfo *next;
+// }				SDLX_GUIInfo;
 
 typedef struct GUI_intern
 {
-	SDLX_GUIInfo *head;
-	SDLX_GUIInfo *tail;
+	SDLX_GUIElem **elems;
+	// SDLX_GUIInfo *tail;
 
 	size_t GUICount;
+	size_t GUICap;
 }			GUI_intern;
 
 static int keypress;
@@ -61,66 +60,55 @@ void SDLX_ResetInput(int key);
 
 void SDLX_GUIInit(void)
 {
-	_intern.head = calloc(GUICT, sizeof(SDLX_GUIInfo));
-	_intern.tail = _intern.head;
+	_intern.elems = calloc(GUICT, sizeof(SDLX_GUIElem *));
 	_intern.GUICount = 0;
+	_intern.GUICap = GUICT;
 	defaultTarget = NULL;
 	currentTarget = NULL;
 	selector = SDLX_KEYBOARD;
 }
 
 
-//Change this to linked list /array
-SDLX_GUIElem *SDLX_GUIElem_Create(SDLX_Sprite *sprite, const char *name,
+//Return int for error catching
+
+void SDLX_GUIElem_Create(SDLX_GUIElem *dest,
+			SDLX_Sprite *sprite, const char *name,
 			SDLX_UIFunc isSelectFn,
 			SDLX_UIFunc OnSelectEnterFn,SDLX_UIFunc OnSelectExitFn,
 			SDLX_UIFunc OnSelectStayFn,	SDLX_UIFunc OnClickFn)
 {
-	SDLX_GUIInfo *node;
-
-	node =  calloc(1, sizeof(SDLX_GUIInfo));
+	if (_intern.GUICount >= _intern.GUICap)
+	{
+		_intern.GUICap *= 2;
+		_intern.elems = realloc(_intern.elems, _intern.GUICap * sizeof(SDLX_Animator *));
+	}
 
 	if (sprite)
 	{
-		node->elem.spriteptr = sprite;
+		dest->sprite = sprite;
  	}
 	else
-		node->elem.spriteptr = &node->elem.sprite;
+		return ;
 
-	(node->elem.sprite.dstptr == NULL)
-		? (node->elem.sprite.dstptr = &node->elem.sprite.dst)
+	(dest->sprite->dst == NULL)
+		? (dest->sprite->dst = &dest->sprite->_dst)
 		: (NULL);
-	node->elem.name = name;
-	node->elem.metadata = &node->meta;
-	node->elem.autotrigger = 	SDLX_TRUE;
+	dest->name = name;
+	dest->autotrigger = 	SDLX_TRUE;
 
-	node->meta.cd				= 10;
-	node->meta.type			= SDLX_BUTTON;
-	node->meta.active			= SDLX_FALSE;
-	node->meta.selectStatus	= SDLX_FALSE;
+	// dest->cd			= 10;
+	dest->active		= SDLX_FALSE;
+	dest->selectStatus	= SDLX_FALSE;
 
-	node->meta.isSelectFn 		= isSelectFn;
+	dest->isSelectFn 		= isSelectFn;
 
-	node->meta.UIFuncs[STARTSELECT]= OnSelectEnterFn;
-	node->meta.UIFuncs[STAY] 		= OnSelectStayFn;
-	node->meta.UIFuncs[ENDSELECT]	= OnSelectExitFn;
-	node->meta.UIFuncs[CLICKED]	= OnClickFn;
+	dest->UIFuncs[STARTSELECT]= OnSelectEnterFn;
+	dest->UIFuncs[STAY] 		= OnSelectStayFn;
+	dest->UIFuncs[ENDSELECT]	= OnSelectExitFn;
+	dest->UIFuncs[CLICKED]	= OnClickFn;
 
-	_intern.tail->next = node;
-	_intern.tail = node;
+	_intern.elems[_intern.GUICount] = dest;
 	_intern.GUICount++;
-	return &(node->elem);
-}
-
-void	SDLX_GUIElem_SetActive(SDLX_GUIElem *elem, int isActive)
-{
-	elem->metadata->active = isActive;
-	if (elem->sprite.animator)
-	{
-		elem->sprite.animator->active = isActive;
-		elem->sprite.animator->frameNo = 0;
-		elem->sprite.animator->state = 0;
-	}
 }
 
 void SDLX_GUI_KeyMap(int up, int down, int left, int right, int select)
@@ -132,17 +120,19 @@ void SDLX_GUI_KeyMap(int up, int down, int left, int right, int select)
 	GUI_KEYS[SELECT] = select;
 }
 
-void	SDLX_GUIElem_SetDefaultTarget(SDLX_GUIElem *def) { defaultTarget = def; def->metadata->selectStatus = SDLX_NONE;
+void	SDLX_GUIElem_SetDefaultTarget(SDLX_GUIElem *def) {
+	defaultTarget = def;
+	def->selectStatus = SDLX_NONE;
 	currentTarget = def;
 	def->triggered = SDLX_FALSE;
 }
 
 void	SDLX_GUIElem_SetKbTarget(SDL_UNUSED int Target,SDLX_GUIElem *target, SDLX_GUIElem *up, SDLX_GUIElem *down, SDLX_GUIElem *left, SDLX_GUIElem *right)
 {
-	target->metadata->neighbours[U] = up;
-	target->metadata->neighbours[D] = down;
-	target->metadata->neighbours[L] = left;
-	target->metadata->neighbours[R] = right;
+	target->neighbours[U] = up;
+	target->neighbours[D] = down;
+	target->neighbours[L] = left;
+	target->neighbours[R] = right;
 }
 
 int count(int *c, int max)
@@ -164,8 +154,8 @@ int _MouseUpdate(SDLX_GUIElem *elem)
 
 	input = SDLX_InputGet();
 	elem->triggered = 0;
-	select = elem->metadata->selectStatus;
-	mouseHover = SDLX_MouseInRect(input.mouse.x, input.mouse.y, *elem->spriteptr->dstptr);
+	select = elem->selectStatus;
+	mouseHover = SDLX_MouseInRect(input.mouse.x, input.mouse.y, *elem->sprite->dst);
 
 	if (!mouseHover && currentTarget == elem)
 	{
@@ -191,20 +181,18 @@ int _MouseUpdate(SDLX_GUIElem *elem)
 int _KBUpdate(SDLX_GUIElem *elem)
 {
 	int select;
-	SDLX_GUIMeta *meta;
 
-	meta = elem->metadata;
-	select = elem->metadata->selectStatus;
+	select = elem->selectStatus;
 	if (elem == currentTarget)
 	{
 		for (int i = 0; i < 4; i++)
 		{
-			if ((KEYSDATA[i] == SDLX_KEYDOWN || (KEYSDATA[i] == SDLX_KEYHELD && !count(&(meta->cd), 10)))
-			&& elem->metadata->neighbours[i])
+			if ((KEYSDATA[i] == SDLX_KEYDOWN || (KEYSDATA[i] == SDLX_KEYHELD && !count(&(elem->cd), 10)))
+			&& elem->neighbours[i])
 			{
 				select = 0;
-				currentTarget = elem->metadata->neighbours[i];
-				currentTarget->metadata->selectStatus = 1;
+				currentTarget = elem->neighbours[i];
+				currentTarget->selectStatus = 1;
 				KEYSDATA[i] = SDLX_NONE;
 				break ;
 			}
@@ -236,20 +224,21 @@ int		_GetSelector(void)
 
 	int			newselector;
 	int			oldselector;
-	SDLX_GUIInfo *node;
+
+	size_t		i;
 
 	input = SDLX_InputGet();
 	oldselector = (selector << 1) & 2;
 	newselector = 0;
-	node = _intern.head->next;
-	while(node)
+	i = 0;
+	while(i < _intern.GUICount)
 	{
-		if (SDL_PointInRect(&input.mouse, node->elem.spriteptr->dstptr))
+		if (SDL_PointInRect(&input.mouse, _intern.elems[i]->sprite->dst))
 		{
 			newselector = 1;
 			break ;
 		}
-		node = node->next;
+		i++;
 	}
 
 	for (int i = 0; i < 4; i++)
@@ -269,46 +258,43 @@ int		_GetSelector(void)
 
 void SDLX_GUIUpdate(void)
 {
-	SDLX_GUIMeta *meta;
-	SDLX_GUIInfo *node;
 	SDLX_Input 	input;
 	int mouseHover;
 	int select;
 	int oldSelect;
-
+	size_t		i;
 
 	_GetSelector();
-	node = _intern.head->next;
-	while (node)
+	i = 0;
+	while (i < _intern.GUICount)
 	{
-		meta = &node->meta;
-		if (meta->active)
+		if (_intern.elems[i]->active)
 		{
-			select =  meta->isSelectFn(&node->elem);
-			oldSelect = meta->selectStatus;
+			select =  _intern.elems[i]->isSelectFn(_intern.elems[i]);
+			oldSelect = _intern.elems[i]->selectStatus;
 
 			if (select == SDLX_TRUE && oldSelect == SDLX_FALSE)
 			{
-				meta->UIFuncs[STARTSELECT](&node->elem);
+				_intern.elems[i]->UIFuncs[STARTSELECT](_intern.elems[i]);
 			}
 			else if (select == SDLX_TRUE && oldSelect == SDLX_TRUE)
 			{
-				meta->UIFuncs[STAY](&node->elem);
+				_intern.elems[i]->UIFuncs[STAY](_intern.elems[i]);
 			}
 			else if (select == SDLX_FALSE && oldSelect == SDLX_TRUE)
 			{
-				meta->UIFuncs[ENDSELECT](&node->elem);
+				_intern.elems[i]->UIFuncs[ENDSELECT](_intern.elems[i]);
 			}
 			// SDL_Log("FUNC");
-			meta->selectStatus = select;
-			if (select != SDLX_FALSE && node->elem.triggered)
+			_intern.elems[i]->selectStatus = select;
+			if (select != SDLX_FALSE && _intern.elems[i]->triggered)
 			{
-				SDL_Log("Triggered %s\n", node->elem.name);
-				meta->UIFuncs[CLICKED](&node->elem);
+				SDL_Log("Triggered %s\n", _intern.elems[i]->name);
+				_intern.elems[i]->UIFuncs[CLICKED](_intern.elems[i]);
 			}
 			// if (&node->>autotrigger) Maybe?
-			node->elem.triggered = SDLX_FALSE;
+			_intern.elems[i]->triggered = SDLX_FALSE;
 		}
-		node= node->next;
+		i++;
 	}
 }

@@ -22,10 +22,10 @@ void CastSpell(int id)
 		{
 			ctx->player.current = &ctx->spells[i];
 			SDL_Log("cast %d as %d",id,  i);
-			ctx->player.current->cast.animator->active = SDLX_TRUE;
-			ctx->player.current->projectile.animator->active = SDLX_FALSE;
-			ctx->player.current->info.elapsed = &ctx->player.current->cast.animator->frameNo;
-			ctx->player.current->info.state = &ctx->player.current->cast.animator->state;
+			ctx->player.current->c_anim.active = SDLX_TRUE;
+			ctx->player.current->p_anim.active = SDLX_FALSE;
+			ctx->player.current->info.elapsed = &ctx->player.current->c_anim.frameNo;
+			ctx->player.current->info.state = &ctx->player.current->c_anim.state;
 			*ctx->player.current->info.state = 1;
 			*ctx->player.current->info.elapsed = 0;
 			break ;
@@ -40,20 +40,20 @@ int ReadyCheck(Spell *spell)
 		return 0;
 	// SDL_Log("Spell State %d frame %d", *spell->info.state, *spell->info.elapsed );
 	if (*spell->info.state == 2 && *spell->info.elapsed == spell->info.castTime)
-		SDLX_Animator_StateSet(spell->cast.animator, 1, SDLX_FALSE);
+		SDLX_Animator_StateSet(&spell->c_anim, 1, SDLX_FALSE);
 	if (*spell->info.state == 1 && *spell->info.elapsed == spell->info.chargeTime)
-		SDLX_Animator_StateSet(spell->cast.animator, 0, SDLX_FALSE);
+		SDLX_Animator_StateSet(&spell->c_anim, 0, SDLX_FALSE);
 	return *spell->info.state == 0;
 }
 
 void ActivateSpell(Spell *spell)
 {
-	spell->info.elapsed = &spell->projectile.animator->frameNo;
-	spell->info.state = &spell->projectile.animator->state;
-	spell->projectile.animator->active = SDLX_TRUE;
-	spell->cast.animator->active = SDLX_FALSE;
-	spell->cast.dstptr->x = STARTX;
-	spell->cast.dstptr->y = STARTY;
+	spell->info.elapsed = &spell->p_anim.frameNo;
+	spell->info.state = &spell->p_anim.state;
+	spell->p_anim.active = SDLX_TRUE;
+	spell->c_anim.active = SDLX_FALSE;
+	spell->cast.dst->x = STARTX;
+	spell->cast.dst->y = STARTY;
 	spell->collider.active = SDLX_TRUE;
 }
 
@@ -70,11 +70,11 @@ int GetSpell(void)
 
 	while (i < ctx->level.norder)
 	{
-		number |= (1 << (atoi(ctx->level.order[i]->name) + i));
+		number |= (1 << (atoi(ctx->level.order[i]->elem.name) + i));
 
-		ctx->level.order[i]->sprite.dst.w = 0;
-		ctx->level.order[i]->sprite.animator->active = SDLX_FALSE;
-		ctx->level.order[i]->data = &ctxFalse;
+		ctx->level.order[i]->sprite.dst->w = 0;
+		ctx->level.order[i]->anim.active = SDLX_FALSE;
+		ctx->level.order[i]->isTrigger = SDLX_FALSE;
 		i++;
 	}
 	ctx->level.norder = 0;
@@ -94,16 +94,18 @@ void DrawSpell(void)
 	ctx = getCtx();
 	input = SDLX_InputGet();
 	display = SDLX_DisplayGet();
+	sprite = &ctx->level.order[ctx->level.norder - 1]->sprite;
+	// SDL_Log("noder %d", ctx->level.norder);
+	// SDL_Log("Sprite %p", sprite);
 
 
 	SDL_SetRenderDrawColor(display->renderer, 255, 0, 0, 255);
-	sprite = &ctx->level.order[ctx->level.norder - 1]->sprite;
-	sprite->dst.w = SDL_sqrt(MT_GetDistance(sprite->dst.x , sprite->dst.y , input.mouse.x, input.mouse.y));
-	// sprite->dst.w += input.mouse_delta.x + input.mouse_delta.y; potentially something to be done with mouse delta
+	sprite->dst->w = SDL_sqrt(MT_GetDistance(sprite->dst->x , sprite->dst->y , input.mouse.x, input.mouse.y));
+	// sprite->dst->w += input.mouse_delta.x + input.mouse_delta.y; potentially something to be done with mouse delta
 	// to avoid the sqrt
-	sprite->angle = MT_ToDegf(atan2(-(sprite->dst.y - input.mouse.y), -(sprite->dst.x - input.mouse.x)));
-	if (sprite->dst.w > 200)
-		sprite->dst.w = 200;
+	sprite->angle = MT_ToDegf(atan2(-(sprite->dst->y - input.mouse.y), -(sprite->dst->x - input.mouse.x)));
+	if (sprite->dst->w > 200)
+		sprite->dst->w = 200;
 
 	SDL_SetRenderDrawColor(display->renderer, 0, 0, 0, 255);
 }
@@ -111,11 +113,11 @@ void DrawSpell(void)
 void CopySpell(Spell *src, Spell *dst)
 {
 	dst->info = src->info;
-	dst->cast.animator->anims = src->cast.animator->anims;
-	dst->cast.animator->amount = src->cast.animator->amount;
-	dst->cast.animator->frameNo = 0;
-	dst->projectile.animator->anims = src->projectile.animator->anims;
-	dst->projectile.animator->amount = src->projectile.animator->amount;
-	dst->projectile.animator->frameNo = 0;
+	dst->c_anim.anims = src->c_anim.anims;
+	dst->c_anim.amount = src->c_anim.amount;
+	dst->c_anim.frameNo = 0;
+	dst->p_anim.anims = src->p_anim.anims;
+	dst->p_anim.amount = src->p_anim.amount;
+	dst->p_anim.frameNo = 0;
 	dst->collider.reactionFn = src->info.reaction;
 }

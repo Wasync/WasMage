@@ -42,8 +42,4 @@ void			SDLX_BackgroundSet(SDL_Texture *bg);
 SDLX_Display	*SDLX_DisplayGet(void);
 
 
-
-
-
-
 #endif

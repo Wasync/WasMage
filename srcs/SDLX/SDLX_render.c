@@ -100,10 +100,10 @@ void	SDLX_RenderQueueDisplay(SDLX_RenderQueue *queue, SDLX_Display *display)
 	{
 		SDL_RenderCopyEx(display->renderer,
 						queue->sprites[i].sprite_sheet,
-						queue->sprites[i].srcptr,
-						queue->sprites[i].dstptr,
+						queue->sprites[i].src,
+						queue->sprites[i].dst,
 						queue->sprites[i].angle,
-						&queue->sprites[i].center,
+						queue->sprites[i].center,
 						queue->sprites[i].flip);
 		i++;
 	}

@@ -23,9 +23,11 @@ int initSpells(void)
 		{
 			SDLX_SpriteCreate(&ctx->player.active[i].cast, NULL, NULL, &dst);
 			SDLX_SpriteCreate(&ctx->player.active[i].projectile, NULL, NULL, &dst);
-			SDLX_AnimatorCreate(NULL, NULL, 0, NULL, &ctx->player.active[i].cast)->active = SDLX_FALSE;
-			SDLX_AnimatorCreate(NULL, NULL, 0, NULL, &ctx->player.active[i].projectile)->active = SDLX_FALSE;
-			SDLX_ColliderCreate(L_SPELL | L_ENEMY, 0, ctx->player.active[i].projectile.dstptr,
+			SDLX_AnimatorCreate(&(ctx->player.active[i].c_anim), NULL, 0, &ctx->player.active[i].cast);
+			SDLX_AnimatorCreate(&(ctx->player.active[i].p_anim), NULL, 0, &ctx->player.active[i].projectile);
+			ctx->player.active[i].p_anim.active = SDLX_FALSE;
+			ctx->player.active[i].c_anim.active = SDLX_FALSE;
+			SDLX_ColliderCreate(L_SPELL | L_ENEMY, 0, ctx->player.active[i].projectile.dst,
 								&ctx->player.active[i].collider, spell_collide, NULL, &ctx->player.active[i].info);
 			i++;
 		}
@@ -63,8 +65,10 @@ int initSpellData(void)
 
 		SDLX_SpriteCreate(&(ctx->spells[0].cast), t_Fireball, NULL, &dst);
 		SDLX_SpriteCreate(&(ctx->spells[0].projectile), t_Fireball, NULL, &dst);
-		SDLX_AnimatorCreate(NULL, a_Fireball, 3, NULL, &(ctx->spells[0].cast))->active = SDLX_FALSE;
-		SDLX_AnimatorCreate(NULL, &a_Fireball[3], 1, NULL, &(ctx->spells[0].projectile))->active = SDLX_FALSE;
+		SDLX_AnimatorCreate(&(ctx->spells[0].c_anim), a_Fireball, 3, &(ctx->spells[0].cast));
+		SDLX_AnimatorCreate(&(ctx->spells[0].p_anim), &a_Fireball[3], 1, &(ctx->spells[0].projectile));
+		ctx->spells[0].c_anim.active = SDLX_FALSE;
+		ctx->spells[0].p_anim.active = SDLX_FALSE;
 		ctx->spells[0].info.id = FBALL;
 		ctx->spells[0].info.type = FIRE;
 		ctx->spells[0].info.damage = 2;
@@ -74,7 +78,6 @@ int initSpellData(void)
 		ctx->spells[0].info.reaction = &fireball_react;
 		ctx->spells[0].info.func = &Fireball;
 		ctx->spells[0].cast.queue = 0;
-
 
 		wasInit = 1;
 	}

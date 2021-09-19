@@ -27,13 +27,14 @@ void init_enemyData(void)
 		anim[2] = SDLX_AnimLoadHorizontal(tex, 8, 64, 69, SDLX_FALSE, 0, 69 * 2);
 
 		SDLX_SpriteCreate(&E_SKULL.sprite, tex, NULL, NULL);
-		SDLX_AnimatorCreate(NULL, anim, 3, NULL, &E_SKULL.sprite)->active = SDLX_FALSE;
+		SDLX_AnimatorCreate(&E_SKULL.animator, anim, 3, &E_SKULL.sprite);
 
 		E_SKULL.info.id = 1;
-		E_SKULL.info.type = FIRE;
-		E_SKULL.info.func = &skullfn;
 		E_SKULL.info.hp = 20;
 		E_SKULL.info.speed = 2;
+		E_SKULL.info.type = FIRE;
+		E_SKULL.info.func = &skullfn;
+		E_SKULL.animator.active = SDLX_FALSE;
 
 		F_ADD(F_SINGLE, E_SKULL, WIN_W / 2, WIN_H / 2, 128, 128, offset);
 		F_ADD(F_SINGLE, E_SKULL, WIN_W / 3, WIN_H / 3, 64, 64, offset);
@@ -55,10 +56,11 @@ void init_enemies(void)
 		while (i < 50)
 		{
 			SDLX_SpriteCreate(&ctx->enemy_data[i].sprite, NULL, NULL, NULL);
-			SDLX_AnimatorCreate(NULL, NULL, 0, NULL, &ctx->enemy_data[i].sprite);
-			SDLX_ColliderCreate(L_ENEMY, 0, ctx->enemy_data[i].sprite.dstptr
+			SDLX_AnimatorCreate(&ctx->enemy_data[i].animator, NULL, 0, &ctx->enemy_data[i].sprite);
+			SDLX_ColliderCreate(L_ENEMY, 0, ctx->enemy_data[i].sprite.dst
 				,&ctx->enemy_data[i].collider, SDLX_DefaultCollision, e_react
 				,&ctx->enemy_data[i].info);
+				ctx->enemy_data[i].animator.active = SDLX_FALSE;
 			i++;
 		}
 		WasInit = 1;

@@ -22,11 +22,17 @@
 
 struct SDLX_GUIMeta;
 struct SDLX_Animator;
-// typedef struct SDLX_GUIMeta  GUIMETA;
 typedef struct SDLX_Collider SDLX_Collider;
+typedef struct SDLX_GUIElem SDLX_GUIElem;
+// typedef struct SDLX_GUIMeta  GUIMETA;
 
-typedef int (* SDLX_CollisionFn)(struct SDLX_Collider *, struct SDLX_Collider *);
-typedef void (* SDLX_ReactionFn)(struct SDLX_Collider *, struct SDLX_Collider *);
+// typedef void (* SDLX_CollisionFn)(struct SDLX_Collider *, struct SDLX_Collider *);
+// typedef void(*SDLX_ReactionFn)(struct SDLX_Collider *, struct SDLX_Collider *);
+
+typedef int (* SDLX_UIFunc)(struct SDLX_GUIElem *);
+
+typedef SDL_bool (* SDLX_CollisionFn)(SDLX_Collider *, SDLX_Collider *);
+typedef void	 (* SDLX_ReactionFn)(SDLX_Collider *, SDLX_Collider *);
 
 enum
 {
@@ -36,12 +42,6 @@ enum
 	SDLX_TRUE,
 	SDLX_AUTO,
 	SDLX_DELAYSWITCH
-};
-
-enum SDLX_GUIType
-{
-	SDLX_BUTTON = 1,
-	SDLX_PANEL
 };
 
 typedef enum SDLX_Keys
@@ -68,10 +68,11 @@ typedef enum SDLX_InputType
 typedef struct	SDLX_Input
 {
 	int input[INPUT_AMOUNT]; // This is just assuming no more than 5 keys will be mapped but that is a terrible asusmption. This should be allocated
-	SDL_Point mouse;
-	SDL_Point mouse_delta;
 	int mouse_click;
 	int key_down;
+
+	SDL_Point mouse;
+	SDL_Point mouse_delta;
 }				SDLX_Input;
 
 typedef struct SDLX_Display
@@ -83,16 +84,17 @@ typedef struct SDLX_Display
 
 typedef struct SDLX_Sprite
 {
-	SDL_Rect			dst;
-	SDL_Rect			src;
-	SDL_Rect			*srcptr;
-	SDL_Rect			*dstptr;
+	SDL_Rect			_dst;
+	SDL_Rect			_src;
+	SDL_Rect			*src;
+	SDL_Rect			*dst;
 
 	SDL_RendererFlip	flip;
-	SDL_Point			center;
-	SDL_Texture			*sprite_sheet;
 
-	struct SDLX_Animator *animator;
+	SDL_Point			_center;
+	SDL_Point			*center;
+
+	SDL_Texture			*sprite_sheet;
 
 	double				angle;
 	int					queue;
@@ -114,13 +116,13 @@ typedef struct SDLX_Animator
 	int			active;
 	int			amount;
 	int			frameNo;
+	int			stateLock;
+	int			nextAnim;
 
 	SDLX_Anim	**anims;
+	SDLX_Sprite	*sprite;
 
-	SDLX_Sprite	sprite;
-	SDLX_Sprite	*spriteptr;
-
-	void		*metadata;
+	void		*meta;
 }				SDLX_Animator;
 
 typedef struct SDLX_RenderQueue
@@ -140,28 +142,35 @@ typedef struct SDLX_Circle
 
 typedef struct SDLX_GUIElem
 {
-	SDLX_Sprite sprite;
-	SDLX_Sprite *spriteptr;
+	SDLX_Sprite *sprite;
 
 	void *data;
 
-	int	 triggered;
-	int  autotrigger;
-	struct SDLX_GUIMeta *metadata;
+	int cd;
+	int active;
+	int triggered;
+	int autotrigger;
+	int selectStatus;
+
+	SDLX_UIFunc		isSelectFn;
+	SDLX_UIFunc		UIFuncs[4];
+	struct SDLX_GUIElem	*neighbours[4];
 
 	const char *name;
 }				SDLX_GUIElem;
 
 typedef struct SDLX_Collider
 {
+
+	//POssibly union here to allow for rect & circle collision
 	void	 	*collisionBoxPtr;
 	SDL_Rect 	collisionBox;
 
 	SDLX_CollisionFn collisionFn;
 	SDLX_ReactionFn	 reactionFn;
 
-	int 		active;
 	int			layerMask;
+	int			active;
 	void		*data;
 }				SDLX_Collider;
 
@@ -175,6 +184,6 @@ typedef struct SDLX_Collision
 
 
 typedef void (* SDLX_LevelFunc)(void *);
-typedef int (* SDLX_UIFunc)(SDLX_GUIElem *);
+
 
 #endif

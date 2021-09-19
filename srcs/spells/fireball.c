@@ -20,8 +20,8 @@ int Fireball(Spell *spell)
 
 	if (*spell->info.elapsed < 8)
 	{
-		spell->projectile.dstptr->x -= spell->step.x;
-		spell->projectile.dstptr->y -= spell->step.y;
+		spell->projectile.dst->x -= spell->step.x;
+		spell->projectile.dst->y -= spell->step.y;
 	}
 	spell->info.active = *spell->info.elapsed == 8;
 

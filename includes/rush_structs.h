@@ -51,6 +51,8 @@ typedef struct Spell
 	SDL_Point	step;
 	SDLX_Sprite cast;
 	SDLX_Sprite projectile;
+	SDLX_Animator p_anim;
+	SDLX_Animator c_anim;
 	SDL_Texture *spellPage;
 
 	SDLX_Collider collider;
@@ -70,8 +72,10 @@ typedef struct Enemy_Info
 typedef struct Enemy
 {
 	Enemy_Info	info;
+
 	SDLX_Sprite sprite;
 	SDLX_Collider collider;
+	SDLX_Animator animator;
 
 }				Enemy;
 
@@ -104,16 +108,6 @@ typedef struct Area
 	int 		isLoaded;
 }				Area;
 
-typedef struct MainLevel
-{
-	SDLX_GUIElem *order[13];
-	Area *area;
-
-	int norder;
-	int drawing;
-	int state;
-}				MainLevel;
-
 typedef struct PlayerData
 {
 	Spell		active[10];
@@ -126,9 +120,28 @@ typedef struct PlayerData
 	int exp;
 }				PlayerData;
 
+typedef struct Button
+{
+	SDLX_GUIElem elem;
+	SDLX_Sprite sprite;
+	SDLX_Animator anim;
+
+	int isTrigger;
+}				Button;
+
+typedef struct MainLevel
+{
+	Button *order[13];
+	Area *area;
+
+	int norder;
+	int drawing;
+	int state;
+}			MainLevel;
+
 typedef struct Context
 {
-	SDLX_GUIElem	*buttons[100];
+	Button			buttons[100];
 	SDLX_Sprite  	sprites[100];
 	SDLX_Sprite		scroll;
 

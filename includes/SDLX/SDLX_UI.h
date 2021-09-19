@@ -3,8 +3,11 @@
 # include "SDLX/SDLX_structs.h"
 
 
-SDLX_GUIElem *SDLX_GUIElem_Create(SDLX_Sprite *sprite, const char *name, SDLX_UIFunc isSelectFn, SDLX_UIFunc OnSelectEnterFn,	SDLX_UIFunc OnSelectExitFn,
-							SDLX_UIFunc OnSelectStayFn,	SDLX_UIFunc OnClickFn);
+void SDLX_GUIElem_Create(SDLX_GUIElem *dest,
+			SDLX_Sprite *sprite, const char *name,
+			SDLX_UIFunc isSelectFn,
+			SDLX_UIFunc OnSelectEnterFn,SDLX_UIFunc OnSelectExitFn,
+			SDLX_UIFunc OnSelectStayFn,	SDLX_UIFunc OnClickFn);
 void	SDLX_GUIElem_SetActive(SDLX_GUIElem *elem, int isActive);
 void	SDLX_GUIUpdate(void);
 void	SDLX_GUI_KeyMap(int up, int down, int left, int right, int select);

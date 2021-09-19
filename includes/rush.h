@@ -58,7 +58,7 @@ int 	initSpellData(void);
 int 	Fireball(Spell *spell);
 int 	NoSpellFn(Spell *spell);
 
-int		spell_collide(SDLX_Collider *self, SDLX_Collider *other);
+SDL_bool spell_collide(SDLX_Collider *self, SDLX_Collider *other);
 void	fireball_react(SDLX_Collider *self, SDLX_Collider *other);
 
 // void	CollisionCheck(Enemy *enemies, int nenemies, Spell *spells, int nspells);

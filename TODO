@@ -111,6 +111,11 @@ Light -> Shadow
 
 ---------------------------
 
+Perhaps a better to render sprites would be to have an array, and a constant static sprites (static sprites stay & dynamic sprites are added
+to the array after them.)
+Static sprites are UI elements, background sprites , etc ?
+
+
 Refactor
 
 Spell use Mana

@@ -14,7 +14,7 @@ void			SDLX_Animator_StateSet(SDLX_Animator *anim,int newState, int awaitCurrent
  * @param amount the number of animation to add.  This shiuld be the length of anims
  * @param dst	the destination rectangle to render the anim
  */
-SDLX_Animator *SDLX_AnimatorCreate(SDLX_Animator *copy, SDLX_Anim **anims, int amount, SDL_Rect *dst, SDLX_Sprite *sprite);
+void SDLX_AnimatorCreate(SDLX_Animator *dest, SDLX_Anim **anims, int amount, SDLX_Sprite *sprite);
 
 /**
  * @brief Loads an animation from a sprite_sheet.
