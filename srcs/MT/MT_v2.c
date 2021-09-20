@@ -122,17 +122,17 @@ MT_Vector2 MT_V2Invert(MT_Vector2 vec)
 	return new_vec;
 }
 
-//MT_Vector2 Normalize(MT_vector2 vec)
-//{
-//	MT_Vector2 result;
-//	double mag;
+MT_Vector2 MT_V2Normalize(MT_Vector2 vec)
+{
+	MT_Vector2 result;
+	double mag;
 
-//	mag = MT_V2Mag(vec);
-//	result.x = vec.x / mag;
-//	result.y = vec.y / mag;
+	mag = MT_V2Mag(vec);
+	result.x = vec.x / mag;
+	result.y = vec.y / mag;
 
-//	return result;
-//}
+	return result;
+}
 
 /*Returns the square of the magnitude of a vector*/
 double MT_V2Mag(MT_Vector2 vec)
