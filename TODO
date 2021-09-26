@@ -116,12 +116,15 @@ to the array after them.)
 Static sprites are UI elements, background sprites , etc ?
 
 
-Refactor
-
-Spell use Mana
-player HP
 Deathh screen
 Pause Screen
+
+Pause SHop
+Main Menu Shop: Permanent spell Upgrade;
+
+hp bar | mana bar
+Spell use Mana
+player HP
 
 Enemy drop coin & collect
 Enemy Formations.
@@ -131,7 +134,6 @@ Enemy Spells.
 Player Spells.
 
 
-Main Menu Shop: Permanent spell Upgrade;
 
 Area 1;
 In-game Shop -> x random upgrades + reroll (for $$)

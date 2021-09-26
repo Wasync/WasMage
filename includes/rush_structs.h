@@ -39,6 +39,7 @@ typedef struct  SpellInfo
 	int 		*state;
 	int 		*elapsed;
 
+	const char *name;
 	SDLX_ReactionFn reaction;
 	SpellFn func;
 
@@ -78,6 +79,8 @@ typedef struct Enemy
 	SDLX_Animator animator;
 
 }				Enemy;
+
+
 
 typedef struct Formation
 {
