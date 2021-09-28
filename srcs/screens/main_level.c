@@ -5,8 +5,10 @@ void main_levelInit(void *arg)
 	SDLX_Anim	**a_beam;
 
 	SDL_Texture *t_beam;
+	SDL_Texture *t_pause;
 	SDL_Texture *t_scroll;
 	SDL_Rect scroll;
+	SDL_Rect pause;
 	SDL_Rect beamrect;
 	SDL_Rect dst;
 
@@ -16,6 +18,7 @@ void main_levelInit(void *arg)
 	ctx = getCtx();
 	t_beam = SDLX_LoadTexture("Assets/Spells/DrawBeam.png", SDLX_DisplayGet());
 	t_scroll = SDLX_LoadTexture("Assets/scroll.png", SDLX_DisplayGet());
+	t_pause = SDLX_LoadTexture("Assets/scroll.png", SDLX_DisplayGet());
 
 	a_beam = calloc(1, sizeof(SDLX_Anim *));
 	a_beam[0] = SDLX_AnimLoadVertical(t_beam, 8, 128, 16, SDL_TRUE, 0, 0);
