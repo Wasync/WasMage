@@ -1,7 +1,7 @@
 #ifndef RUSH_H
 # define RUSH_H
 
-# include "rush_structs.h"
+# include "core_structs.h"
 # include "buttons.h"
 # include "enemies.h"
 

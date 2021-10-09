@@ -1,7 +1,7 @@
 #ifndef ENEMIES_H
 # define ENEMIES_H
 
-# include "rush_structs.h"
+# include "structs/data_structs.h"
 # define NFORMATIONS 1
 # define NWAVES      1
 
