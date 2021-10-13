@@ -44,6 +44,14 @@ typedef struct Enemy
 	SDLX_Animator animator;
 
 }				Enemy;
+
+typedef struct Formation
+{
+	Enemy		enemies[50];
+	int 		nenemies;
+
+}				Formation;
+
 typedef struct  SpellInfo
 {
 	int 		id;

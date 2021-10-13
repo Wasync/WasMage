@@ -68,17 +68,16 @@ int GetSpell(void)
 	ctx = getCtx();
 
 
-	while (i < ctx->level.norder)
-	{
-		number |= (1 << (atoi(ctx->level.order[i]->elem.name) + i));
+	// while (i < ctx->level.norder)
+	// {
+	// 	// number |= (1 << (atoi(ctx->level.order[i]->elem.name) + i));
 
-		ctx->level.order[i]->sprite.dst->w = 0;
-		ctx->level.order[i]->anim.active = SDLX_FALSE;
-		ctx->level.order[i]->isTrigger = SDLX_FALSE;
-		i++;
-	}
-	ctx->level.norder = 0;
-	ctx->level.drawing = SDLX_FALSE;
+	// 	// ctx->level.order[i]->sprite.dst->w = 0;
+	// 	// ctx->level.order[i]->anim.active = SDLX_FALSE;
+	// 	// ctx->level.order[i]->isTrigger = SDLX_FALSE;
+	// 	i++;
+	// }
+	// ctx->level.drawing = SDLX_FALSE;
 	SDL_Log("GOt %d", number);
 	return number;
 }
@@ -94,7 +93,7 @@ void DrawSpell(void)
 	ctx = getCtx();
 	input = SDLX_InputGet();
 	display = SDLX_DisplayGet();
-	sprite = &ctx->level.order[ctx->level.norder - 1]->sprite;
+	// sprite = &ctx->level.order[ctx->level.norder - 1]->sprite;
 	// SDL_Log("noder %d", ctx->level.norder);
 	// SDL_Log("Sprite %p", sprite);
 

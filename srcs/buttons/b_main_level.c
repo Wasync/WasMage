@@ -27,19 +27,14 @@ int DrawButtonHover(SDLX_GUIElem *elem)
 
 	if (ctx->level.drawing == SDLX_TRUE && button->isTrigger == SDLX_FALSE)
 	{
-		if(ctx->level.norder != 0)
-		{
-			ctx->level.order[ctx->level.norder - 1]->sprite.dst->w += 4;
-		}
+
 		// Fix by changing w to distance between them
 		// to be correct but can't be done without extra sqrt
 		// & will be a little off anyways
 		// AVoid for now
 		// }
-		ctx->level.order[ctx->level.norder] = button;
 		button->anim.active = SDLX_TRUE;
 		button->isTrigger = SDLX_TRUE;
-		ctx->level.norder++;
 	}
 	return 0;
 }
@@ -53,8 +48,6 @@ int DrawButtonTrigger(SDLX_GUIElem *elem)
 	ctx = getCtx();
 
 	button = elem->data;
-	ctx->level.order[0] = button;
-	ctx->level.norder++;
 	ctx->level.drawing = SDLX_TRUE;
 	button->anim.active = SDLX_TRUE;
 	button->isTrigger = SDLX_TRUE;

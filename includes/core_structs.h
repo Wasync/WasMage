@@ -45,7 +45,6 @@ typedef struct MainLevel
 
 	Area *area;
 
-	int norder;
 	int drawing;
 	int state;
 }			MainLevel;

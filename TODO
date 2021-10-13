@@ -122,6 +122,8 @@ Pause Screen
 Pause SHop
 Main Menu Shop: Permanent spell Upgrade;
 
+Keep data from level so it doesn't reallocate. Reset values that need to be reset
+
 hp bar | mana bar
 Spell use Mana
 player HP
@@ -140,7 +142,9 @@ In-game Shop -> x random upgrades + reroll (for $$)
 
 
 
-Refactor
+Refactor:
+
+last: Pack Structs
 
 
 SHORTCUTS:

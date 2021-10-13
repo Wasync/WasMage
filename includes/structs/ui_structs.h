@@ -18,7 +18,8 @@ typedef struct Page
 	Button		upgrades[5];
 
 	int 		nUpgrades;
-}				Page
+	SDL_bool	isLocked;
+}				Page;
 
 
 

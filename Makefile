@@ -2,7 +2,7 @@ NAME = Rush
 
 DEBUG_FLAGS = -fsanitize=address
 FLAGS = -g $(DEBUG_FLAGS)
-INCLUDES = -I includes/ -I includes/SDL2/ -I includes/SDLX/ -I includes/MT
+INCLUDES = -I includes/ -I includes/SDL2/ -I includes/SDLX/ -I includes/MT -I includes/structs/
 
 LIB_DIR = libs/
 LIBRARIES = $(LIB_DIR)libSDL2-2.0.0.dylib $(LIB_DIR)libSDL2_image-2.0.0.dylib $(LIB_DIR)libSDL2_ttf-2.0.0.dylib

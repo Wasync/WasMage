@@ -5,6 +5,7 @@
 # define NFORMATIONS 1
 # define NWAVES      1
 
+typedef struct Area Area;
 extern Formation _formations_data[NFORMATIONS];
 
 extern Enemy 	 _enemy_data[50];

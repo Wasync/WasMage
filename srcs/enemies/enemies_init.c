@@ -1,6 +1,7 @@
 
 // #include "rush_structs.h"
 # include "enemies.h"
+# include "core_structs.h"
 
 Formation _formations_data[1];
 Enemy 	 _enemy_data[50];

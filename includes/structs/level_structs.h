@@ -3,13 +3,6 @@
 
 # include "data_structs.h"
 
-typedef struct Formation
-{
-	Enemy		enemies[50];
-	int 		nenemies;
-
-}				Formation;
-
 typedef struct Wave
 {
 	Enemy		enemies[50];

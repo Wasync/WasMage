@@ -1,4 +1,4 @@
-#include "rush_structs.h"
+#include "core_structs.h"
 #include "enemies.h"
 
 # define NAREAS 2

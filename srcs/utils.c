@@ -10,11 +10,11 @@ void renderSprites(void)
 
 	i = 0;
 	ctx = getCtx();
-	while (i < ctx->nsprites)
-	{
-		SDLX_RenderQueueAdd(0, ctx->sprites[i]);
-		i++;
-	}
+	// while (i < ctx->nsprites)
+	// {
+	// 	SDLX_RenderQueueAdd(0, ctx->sprites[i]);
+	// 	i++;
+	// }
 }
 
 void flushSprites(void)
@@ -26,15 +26,15 @@ void flushSprites(void)
 
 	i = 0;
 	ctx = getCtx();
-	while (i < ctx->nsprites)
-	{
-		ctx->sprites[i].sprite_sheet = NULL;
-		// ctx->sprites[i].animator = NULL;
-		ctx->sprites[i]._dst = (SDL_Rect){0, 0, 0, 0};
-		ctx->sprites[i]._src = (SDL_Rect){0, 0, 0, 0};
-		i++;
-	}
-	ctx->nsprites = 0;
+	// while (i < ctx->nsprites)
+	// {
+	// 	ctx->sprites[i].sprite_sheet = NULL;
+	// 	// ctx->sprites[i].animator = NULL;
+	// 	ctx->sprites[i]._dst = (SDL_Rect){0, 0, 0, 0};
+	// 	ctx->sprites[i]._src = (SDL_Rect){0, 0, 0, 0};
+	// 	i++;
+	// }
+	// ctx->nsprites = 0;
 }
 
 void CopyEnemy(Enemy *dst, Enemy*src)
@@ -58,7 +58,7 @@ int NextWave(Area *area)
 	ctx = getCtx();
 	area->currentWave++;
 	wave = &(area->waves[area->currentWave]);
-	ctx->nenmies = wave->nenemies;
+	// ctx->nenmies = wave->nenemies;
 	for (int i = 0; i < wave->nenemies; i++)
 	{
 		CopyEnemy(&ctx->enemy_data[i], &wave->enemies[i]);
