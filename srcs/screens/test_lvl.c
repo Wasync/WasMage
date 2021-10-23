@@ -1,9 +1,10 @@
 # include "rush.h"
 # include "MT_vec2.h"
 
-#define ERR_MARGIN 10
+#define ERR_MARGIN 20
 #define CMP_MARGIN 3
-#define NPATTERNS 16
+#define NPATTERNS 8
+#define N_REPEAT_VALID 2
 
 typedef struct Stroke
 {
@@ -52,39 +53,40 @@ void test_levelInit(void *arg)
 	match[7].vec.y = 50;
 	match[7].angle = MT_ToDegf(SDL_atan2f(match[7].vec.y, match[7].vec.x));
 
-	match[8].vec.x = 75;
-	match[8].vec.y = -25;
-	match[8].angle =  MT_ToDegf(SDL_atan2f(match[8].vec.y, match[8].vec.x));
+	// match[8].vec.x = 75;
+	// match[8].vec.y = -25;
+	// match[8].angle =  MT_ToDegf(SDL_atan2f(match[8].vec.y, match[8].vec.x));
 
-	match[9].vec.x = -75;
-	match[9].vec.y = -25;
-	match[9].angle =  MT_ToDegf(SDL_atan2f(match[9].vec.y, match[9].vec.x));
+	// match[9].vec.x = -75;
+	// match[9].vec.y = -25;
+	// match[9].angle =  MT_ToDegf(SDL_atan2f(match[9].vec.y, match[9].vec.x));
 
-	match[10].vec.x = -75;
-	match[10].vec.y = 25;
-	match[10].angle = MT_ToDegf(SDL_atan2f(match[10].vec.y, match[10].vec.x));
+	// match[10].vec.x = -75;
+	// match[10].vec.y = 25;
+	// match[10].angle = MT_ToDegf(SDL_atan2f(match[10].vec.y, match[10].vec.x));
 
-	match[11].vec.x = 75;
-	match[11].vec.y = 25;
-	match[11].angle = MT_ToDegf(SDL_atan2f(match[11].vec.y, match[11].vec.x));
+	// match[11].vec.x = 75;
+	// match[11].vec.y = 25;
+	// match[11].angle = MT_ToDegf(SDL_atan2f(match[11].vec.y, match[11].vec.x));
 
-	match[12].vec.x = 25;
-	match[12].vec.y = -75;
-	match[12].angle =  MT_ToDegf(SDL_atan2f(match[12].vec.y, match[12].vec.x));
+	// match[12].vec.x = 25;
+	// match[12].vec.y = -75;
+	// match[12].angle =  MT_ToDegf(SDL_atan2f(match[12].vec.y, match[12].vec.x));
 
-	match[13].vec.x = -25;
-	match[13].vec.y = -75;
-	match[13].angle =  MT_ToDegf(SDL_atan2f(match[13].vec.y, match[13].vec.x));
+	// match[13].vec.x = -25;
+	// match[13].vec.y = -75;
+	// match[13].angle =  MT_ToDegf(SDL_atan2f(match[13].vec.y, match[13].vec.x));
 
-	match[14].vec.x = -25;
-	match[14].vec.y = 75;
-	match[14].angle = MT_ToDegf(SDL_atan2f(match[14].vec.y, match[14].vec.x));
+	// match[14].vec.x = -25;
+	// match[14].vec.y = 75;
+	// match[14].angle = MT_ToDegf(SDL_atan2f(match[14].vec.y, match[14].vec.x));
 
-	match[15].vec.x = 25;
-	match[15].vec.y = 75;
-	match[15].angle = MT_ToDegf(SDL_atan2f(match[15].vec.y, match[15].vec.x));
+	// match[15].vec.x = 25;
+	// match[15].vec.y = 75;
+	// match[15].angle = MT_ToDegf(SDL_atan2f(match[15].vec.y, match[15].vec.x));
 
-
+	for (int i = 0; i < NPATTERNS; i++)
+		SDL_Log("Angles %d %f", i, match[i].angle);
 }
 
 int find(Stroke stroke)
@@ -103,6 +105,84 @@ int find(Stroke stroke)
 	return 0;
 }
 
+int sanitizeData(Stroke stroke[1000],Stroke (*san)[1000],  int amount)
+{
+	int i;
+	int n;
+	int x;
+	double angle;
+	int isDiff;
+	int diff;
+	Stroke processed[300];
+
+	i = 0;
+	n = 0;
+	while (i < amount)
+	{
+		// if (stroke[i].delta == 0)
+		// {
+			while (i < amount && stroke[i].delta == 0) {i++;}
+			// processed[n].angle = stroke[i].angle;
+			// angle = stroke[i].angle;
+			// // if (n > 0)
+			// // 	processed[n].angle = angle;
+			// n++;
+		// }
+		processed[n].angle = stroke[i].angle;
+		angle = stroke[i].angle;
+			// if (n > 0)
+			// 	processed[n].angle = angle;
+			n++;
+		i++;
+	}
+	if (i < amount && stroke[i].delta != 0)
+		processed[n++].angle = angle;
+
+	i = 0;
+	diff = 0;
+	angle = processed[i].angle;
+	x = 0;
+	// 	while (i < n)
+	// {
+	// 	SDL_Log("Processed %f", processed[i].angle);
+	// 	i++;
+	// }
+	// i = 0;
+	while (i < n)
+	{
+		// SDL_Log("Pass %d of %d", i , n);
+		if (processed[i].angle == angle)
+		{
+
+			// SDL_Log("SAME %f", angle);
+			diff++;
+		}
+		else
+		{
+			// SDL_Log("DIFF %d %f %f", diff, angle, processed[i].angle);
+			if (diff >= N_REPEAT_VALID)
+			{
+				// SDL_Log("VALID %d %f", diff, angle);
+				if (x == 0 || (*san)[x - 1].angle != angle)
+				{
+					(*san)[x].angle = angle;
+					x++;
+				}
+			}
+			diff = 1;
+			angle = processed[i].angle;
+		}
+		i++;
+	}
+	if (diff >= N_REPEAT_VALID)
+	{
+		// SDL_Log("VALID %d %f", diff, angle);
+		(*san)[x].angle = angle;
+		x++;
+	}
+	return x;
+}
+
 void test_level(void *arg)
 {
 	static int isdown;
@@ -114,6 +194,7 @@ void test_level(void *arg)
 	static Stroke predictions[1000];
 	static Stroke save;
 	static Stroke cmp;
+	Stroke san[1000];
 
 	input = SDLX_InputGet();
 
@@ -143,43 +224,20 @@ void test_level(void *arg)
 		stroke[n].angle = MT_ToDegf(SDL_atan2f(stroke[n].vec.y, stroke[n].vec.x));
 
 		predictions[n] = match[find(stroke[n])];
-			predictions[n].delta = 1;
+		predictions[n].delta = 1;
 		if (input.mouse_delta.x == 0 && input.mouse_delta.y == 0)
 			predictions[n].delta = 0;
 		n++;
-		// if (c > 10)
-		// {
-		// 	if (
-		// 		n < 3 &&
-		// 		(stroke[n].vec.x - cmp.vec.x < -CMP_MARGIN ||
-		// 		stroke[n].vec.x - cmp.vec.x > CMP_MARGIN ||
-		// 		stroke[n].vec.y - cmp.vec.y > CMP_MARGIN ||
-		// 		stroke[n].vec.y - cmp.vec.y < -CMP_MARGIN ))
-		// 		{
-		// 		SDL_Log("DIFF x %f y %f", stroke[n].vec.x - cmp.vec.x, stroke[n].vec.y - cmp.vec.y);
-		// 		// SDL_Log("??????????? %d %d %d %d",
-		// 		// 			stroke[n].vec.x - cmp.vec.x < -CMP_MARGIN ,
-		// 		// 	stroke[n].vec.x - cmp.vec.x > CMP_MARGIN,
-		// 		// 	stroke[n].vec.y - cmp.vec.y < CMP_MARGIN,
-		// 		// 	stroke[n].vec.y - cmp.vec.y < -CMP_MARGIN );
-		// 		// stroke[n] = save;
-		// 			n++;
-		// 			c = 0;
-		// 			stroke[n].start = input.mouse;
-		// 			stroke[n].end = input.mouse;
-		// 		}
-		// }
-		// else if (input.mouse_delta.x != 0 || input.mouse_delta.y != 0)
-		// {
-		// 	cmp = stroke[n];
-		// 	c++;
-		// }
 	}
 	if (input.mouse_click == SDL_MOUSEBUTTONUP && isdown)
 	{
 		isdown = SDLX_NONE;
-		c = 0;
 		// stroke[n].start = input.mouse;
+		c = sanitizeData(predictions, &san, n);
+		for (int _ = 0; _ < c; _++)
+		{
+			SDL_Log("Sanitized %f", san[_].angle);
+		}
 		for (int _ = 0; _ < n; _++)
 		{
 			SDL_Log("Drawn vector [%f] | Predicted [%f] [DELTA %d]", stroke[_].angle, predictions[_].angle, predictions[_].delta);
@@ -192,27 +250,33 @@ void test_level(void *arg)
 	}
 	if (isdown == SDLX_NONE)
 	{
+		SDL_SetRenderDrawColor(SDLX_DisplayGet()->renderer,0, 255, 0, 255);
 		for (int _ = 0; _ < n; _++)
 		{
-			SDL_SetRenderDrawColor(SDLX_DisplayGet()->renderer,0, 255, 0, 255);
 			SDL_RenderDrawLine(SDLX_DisplayGet()->renderer, stroke[_].start.x, stroke[_].start.y, stroke[_].start.x + predictions[_].vec.x,
 																							stroke[_].start.y + predictions[_].vec.y);
 		}
+		SDL_SetRenderDrawColor(SDLX_DisplayGet()->renderer,0, 0, 255, 255);
+		for (int _ = 0; _ < c; _++)
+		{
+			SDL_RenderDrawLine(SDLX_DisplayGet()->renderer, 50 + (50 * _), 100, 50 + (50 * _) + match[find(san[_])].vec.x,
+																							100 + match[find(san[_])].vec.y);
+		}
 	}
 
+	SDL_SetRenderDrawColor(SDLX_DisplayGet()->renderer, 255, 0, 0, 255);
 	for (int x = 0; x < n; x++)
 	{
-		SDL_SetRenderDrawColor(SDLX_DisplayGet()->renderer, 255, 0, 0, 255);
 		SDL_RenderDrawLine(SDLX_DisplayGet()->renderer, stroke[x].start.x, stroke[x].start.y, stroke[x].end.x, stroke[x].end.y);
-		SDL_SetRenderDrawColor(SDLX_DisplayGet()->renderer, 0, 0, 0, 255);
 	}
 
+		// SDL_SetRenderDrawColor(SDLX_DisplayGet()->renderer, 0, 0, 0, 255);
+	SDL_SetRenderDrawColor(SDLX_DisplayGet()->renderer, 255, 0, 0, 255);
 	for (int x = 0; x < NPATTERNS; x++)
 	{
-		SDL_SetRenderDrawColor(SDLX_DisplayGet()->renderer, 255, 0, 0, 255);
 		SDL_RenderDrawLine(SDLX_DisplayGet()->renderer, WIN_W - 100, WIN_H - 100, (WIN_W - 100) + match[x].vec.x,(WIN_H - 100) + match[x].vec.y);
-		SDL_SetRenderDrawColor(SDLX_DisplayGet()->renderer, 0, 0, 0, 255);
 	}
+	SDL_SetRenderDrawColor(SDLX_DisplayGet()->renderer, 0, 0, 0, 255);
 }
 
 
