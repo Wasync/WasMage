@@ -259,7 +259,7 @@ void test_level(void *arg)
 		SDL_SetRenderDrawColor(SDLX_DisplayGet()->renderer,0, 0, 255, 255);
 		for (int _ = 0; _ < c; _++)
 		{
-			SDL_RenderDrawLine(SDLX_DisplayGet()->renderer, 50 + (50 * _), 100, 50 + (50 * _) + match[find(san[_])].vec.x,
+			SDL_RenderDrawLine(SDLX_DisplayGet()->renderer, 50 + (75 * _), 100, 50 + (75 * _) + match[find(san[_])].vec.x,
 																							100 + match[find(san[_])].vec.y);
 		}
 	}
