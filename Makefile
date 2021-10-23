@@ -78,7 +78,10 @@ SRCS = $(addsuffix .c, $(C_FILES))
 
 OBJS = $(addprefix $(BIN_DIR), $(SRCS:.c=.o))
 
-all: $(NAME)
+all : $(NAME)
+
+web :
+	emcc  $(INCLUDES) -o Mage.html $(SRCS) -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' -s ERROR_ON_UNDEFINED_SYMBOLS=0 --preload-file Assets
 
 $(NAME): $(BIN_DIR) $(OBJS)
 	gcc $(FLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LIBRARIES)
